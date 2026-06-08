@@ -20,6 +20,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
+// ==========================================
+// レイヤーごとのLED色定義（レイヤー0はRemapに任せるため定義しません）
+// ==========================================
+const rgblight_segment_t PROGMEM layer_1_layer[] = RGBLIGHT_LAYER_SEGMENTS({191, 255, 204}); // レイヤー1 (紫)
+const rgblight_segment_t PROGMEM layer_2_layer[] = RGBLIGHT_LAYER_SEGMENTS({39,  255, 204}); // レイヤー2 (黄)
+const rgblight_segment_t PROGMEM layer_3_layer[] = RGBLIGHT_LAYER_SEGMENTS({0,   255, 204}); // レイヤー3 (赤)
+const rgblight_segment_t PROGMEM layer_4_layer[] = RGBLIGHT_LAYER_SEGMENTS({85,  204, 204}); // レイヤー4 (緑)
+const rgblight_segment_t PROGMEM layer_5_layer[] = RGBLIGHT_LAYER_SEGMENTS({0,   0,   204}); // レイヤー5 (白)
+
+// レイヤー配列の登録（0番はNULLにすることでRemapの設定が透けて見えます）
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    NULL, // レイヤー0はファームウェア側で色を指定しない
+    layer_1_layer,
+    layer_2_layer,
+    layer_3_layer,
+    layer_4_layer,
+    layer_5_layer
+);
+
+// 初期設定（キーボード起動時にLEDレイヤー機能をONにする）
+void matrix_init_user(void) {
+    rgblight_layers = my_rgb_layers;
+}
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
@@ -53,9 +77,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
+// レイヤーが切り替わったときに実行される処理
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // Auto enable scroll mode when the highest layer is 3
+    // 既存の機能：レイヤー3のときにスクロールモードを自動有効化
     keyball_set_scroll_mode(get_highest_layer(state) == 3);
+
+    // 新規追加：各レイヤーの状態（ON/OFF）に合わせてLED色を切り替える
+    rgblight_set_layer_state(1, layer_state_cmp(state, 1));
+    rgblight_set_layer_state(2, layer_state_cmp(state, 2));
+    rgblight_set_layer_state(3, layer_state_cmp(state, 3));
+    rgblight_set_layer_state(4, layer_state_cmp(state, 4));
+    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
+
     return state;
 }
 
