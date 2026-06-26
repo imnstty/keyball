@@ -19,6 +19,7 @@ along with this program.  If not, see <http://gnu.org>.
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
+#include "transactions.h"
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -70,7 +71,12 @@ void oledkit_render_info_user(void) {
 #endif
 
 #define NO_LED 255
-#define LED_SYNC_ID KEYBALL_LED_SYNC
+#define LED_SYNC_ID 3
+
+typedef struct {
+    uint8_t led;
+    bool pressed;
+} keyball_led_sync_t;
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
