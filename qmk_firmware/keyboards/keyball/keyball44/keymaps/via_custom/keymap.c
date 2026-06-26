@@ -64,21 +64,38 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
+    // 左手側
+    // ESC, Q, W, E, R, T
+    {17, 14, 10, 6, 3, 0},
+
+    // TAB, A, S, D, F, G
+    {18, 15, 11, 7, 4, 1},
+
+    // SHIFT, Z, X, C, V, B
+    {19, 16, 12, 8, 5, 2},
+
+    // なし, ALT, WIN, 無変換, SPACE, レイヤーキー
+    {255, 13, 9, 28, 29, 255},
+
+    // 右手側は未調査なので仮
+    {30, 31, 32, 33, 34, 35},
+    {36, 37, 38, 39, 40, 41},
+    {42, 43, 44, 45, 46, 47},
+    {255, 48, 49, 50, 51, 52},
+};
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    static uint8_t led = 0;
+    uint8_t row = record->event.key.row;
+    uint8_t col = record->event.key.col;
 
-    if (record->event.pressed) {
-        // 全LED消灯
-        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
-            rgblight_setrgb_at(0, 0, 0, i);
-        }
+    uint8_t led = key_to_led[row][col];
 
-        // 現在のLEDだけ赤く点灯
-        rgblight_setrgb_at(255, 0, 0, led);
-
-        led++;
-        if (led >= RGBLED_NUM) {
-            led = 0;
+    if (led != 255 && led < RGBLED_NUM) {
+        if (record->event.pressed) {
+            rgblight_setrgb_at(255, 255, 255, led);
+        } else {
+            rgblight_setrgb_at(0, 0, 0, led);
         }
     }
 
