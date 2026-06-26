@@ -95,26 +95,19 @@ static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     {RLED(26), RLED(8), NO_LED, NO_LED, RLED(9), NO_LED},
 };
 
-void keyboard_post_init_user(void) {
-    rgblight_enable_noeeprom();
-    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-
-    for (uint8_t i = 0; i < RGBLED_NUM; i++) {
-        rgblight_setrgb_at(0, 0, 0, i);
-    }
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    uint8_t row = record->event.key.row;
-    uint8_t col = record->event.key.col;
+    static uint8_t led = 0;
 
-    uint8_t led = key_to_led[row][col];
+    if (record->event.pressed) {
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }
 
-    if (led != NO_LED && led < RGBLED_NUM) {
-        if (record->event.pressed) {
-            rgblight_setrgb_at(255, 255, 255, led);
-        } else {
-            rgblight_setrgb_at(0, 0, 0, led);
+        rgblight_setrgb_at(255, 0, 0, led);
+
+        led++;
+        if (led >= RGBLED_NUM) {
+            led = 0;
         }
     }
 
