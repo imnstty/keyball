@@ -20,6 +20,8 @@ along with this program.  If not, see <http://gnu.org>.
 
 #include "quantum.h"
 
+void keyball_send_led_event(uint8_t led, bool pressed);
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
@@ -89,27 +91,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return true;
     }
 
-    if (is_keyboard_left()) {
-        // USB左：左手キーだけ処理
-        if (row < 4) {
-            led = left_key_to_led[row][col];
+    if (row < 4) {
+        led = left_key_to_led[row][col];
+
+        if (is_keyboard_left()) {
+            if (led != NO_LED) {
+                rgblight_setrgb_at(record->event.pressed ? 255 : 0,
+                                   record->event.pressed ? 255 : 0,
+                                   record->event.pressed ? 255 : 0,
+                                   led);
+            }
         } else {
-            return true;
+            if (led != NO_LED) {
+                keyball_send_led_event(led, record->event.pressed);
+            }
         }
     } else {
-        // USB右：右手キーだけ処理
-        if (row >= 4 && row < 8) {
-            led = right_key_to_led[row - 4][col];
-        } else {
-            return true;
-        }
-    }
+        led = right_key_to_led[row - 4][col];
 
-    if (led != NO_LED && led < RGBLED_NUM) {
-        if (record->event.pressed) {
-            rgblight_setrgb_at(255, 255, 255, led);
+        if (!is_keyboard_left()) {
+            if (led != NO_LED) {
+                rgblight_setrgb_at(record->event.pressed ? 255 : 0,
+                                   record->event.pressed ? 255 : 0,
+                                   record->event.pressed ? 255 : 0,
+                                   led);
+            }
         } else {
-            rgblight_setrgb_at(0, 0, 0, led);
+            if (led != NO_LED) {
+                keyball_send_led_event(led, record->event.pressed);
+            }
         }
     }
 
