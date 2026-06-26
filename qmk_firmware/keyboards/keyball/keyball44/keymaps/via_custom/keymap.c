@@ -109,17 +109,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     } else {
         led = right_key_to_led[row - 4][col];
 
-        if (!is_keyboard_left()) {
-            if (led != NO_LED) {
-                rgblight_setrgb_at(record->event.pressed ? 255 : 0,
-                                   record->event.pressed ? 255 : 0,
-                                   record->event.pressed ? 255 : 0,
-                                   led);
-            }
-        } else {
-            if (led != NO_LED) {
-                keyball_send_led_event(led, record->event.pressed);
-            }
+        if (led != NO_LED) {
+            rgblight_setrgb_at(record->event.pressed ? 255 : 0,
+                               record->event.pressed ? 255 : 0,
+                               record->event.pressed ? 255 : 0,
+                               led);
         }
     }
 
