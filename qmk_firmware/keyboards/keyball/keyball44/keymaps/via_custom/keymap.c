@@ -64,6 +64,9 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+#define NO_LED 255
+#define RLED(n) ((n) + 30)
+
 static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     // 左手側
     // ESC, Q, W, E, R, T
@@ -76,14 +79,30 @@ static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     {19, 16, 12, 8, 5, 2},
 
     // なし, ALT, WIN, 無変換, SPACE, レイヤーキー
-    {255, 13, 9, 28, 29, 255},
+    {NO_LED, 13, 9, 27, 28, 29},
 
-    // 右手側は未調査なので仮
-    {30, 31, 32, 33, 34, 35},
-    {36, 37, 38, 39, 40, 41},
-    {42, 43, 44, 45, 46, 47},
-    {255, 48, 49, 50, 51, 52},
+    // 右手側
+    // Y, U, I, O, P, DEL
+    {RLED(23), RLED(5), RLED(11), RLED(15), RLED(17), RLED(21)},
+
+    // H, J, K, L, ;, '
+    {RLED(24), RLED(6), RLED(27), RLED(16), RLED(19), RLED(22)},
+
+    // N, M, ,, ., /, \,
+    {RLED(25), RLED(7), RLED(28), RLED(18), RLED(20), RLED(29)},
+
+    // BS, ENTER, 無変換, ALT, PRINT, なし
+    {RLED(26), RLED(8), NO_LED, NO_LED, RLED(9), NO_LED},
 };
+
+void keyboard_post_init_user(void) {
+    rgblight_enable_noeeprom();
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+
+    for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+        rgblight_setrgb_at(0, 0, 0, i);
+    }
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint8_t row = record->event.key.row;
@@ -91,7 +110,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     uint8_t led = key_to_led[row][col];
 
-    if (led != 255 && led < RGBLED_NUM) {
+    if (led != NO_LED && led < RGBLED_NUM) {
         if (record->event.pressed) {
             rgblight_setrgb_at(255, 255, 255, led);
         } else {
