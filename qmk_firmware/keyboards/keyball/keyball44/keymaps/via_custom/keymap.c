@@ -19,7 +19,6 @@ along with this program.  If not, see <http://gnu.org>.
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
-#include "transactions.h"
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -66,12 +65,6 @@ void oledkit_render_info_user(void) {
 #endif
 
 #define NO_LED 255
-#define LED_SYNC_ID USER_LED_SYNC
-
-typedef struct {
-    uint8_t led;
-    bool pressed;
-} keyball_led_sync_t;
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
@@ -87,44 +80,36 @@ static const uint8_t right_key_to_led[4][6] = {
     {NO_LED, NO_LED, NO_LED, NO_LED, NO_LED, NO_LED},
 };
 
-void led_sync_slave_handler(uint8_t in_buflen, const void *in_data,
-                            uint8_t out_buflen, void *out_data) {
-    const keyball_led_sync_t *data = (const keyball_led_sync_t *)in_data;
-
-    if (data->led != NO_LED && data->led < RGBLED_NUM) {
-        if (data->pressed) {
-            rgblight_setrgb_at(255, 255, 255, data->led);
-        } else {
-            rgblight_setrgb_at(0, 0, 0, data->led);
-        }
-    }
-}
-
-void keyboard_post_init_user(void) {
-    transaction_register_rpc(LED_SYNC_ID, led_sync_slave_handler);
-}
-
-static void send_led_to_slave(uint8_t led, bool pressed) {
-    keyball_led_sync_t data = {
-        .led = led,
-        .pressed = pressed,
-    };
-
-    transaction_rpc_send(LED_SYNC_ID, sizeof(data), &data);
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint8_t row = record->event.key.row;
+    uint8_t col = record->event.key.col;
+    uint8_t led = NO_LED;
+
+    if (col >= 6) {
+        return true;
+    }
 
     if (is_keyboard_left()) {
-        // USB左：右手キー row 4〜7 を押したら右側slaveのLED0
-        if (row >= 4) {
-            send_led_to_slave(0, record->event.pressed);
+        // USB左：左手キーだけ処理
+        if (row < 4) {
+            led = left_key_to_led[row][col];
+        } else {
+            return true;
         }
     } else {
-        // USB右：左手キー row 0〜3 を押したら左側slaveのLED0
-        if (row < 4) {
-            send_led_to_slave(0, record->event.pressed);
+        // USB右：右手キーだけ処理
+        if (row >= 4 && row < 8) {
+            led = right_key_to_led[row - 4][col];
+        } else {
+            return true;
+        }
+    }
+
+    if (led != NO_LED && led < RGBLED_NUM) {
+        if (record->event.pressed) {
+            rgblight_setrgb_at(255, 255, 255, led);
+        } else {
+            rgblight_setrgb_at(0, 0, 0, led);
         }
     }
 
