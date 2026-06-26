@@ -66,7 +66,7 @@ void oledkit_render_info_user(void) {
 #endif
 
 #define NO_LED 255
-#define LED_SYNC_ID 3
+#define LED_SYNC_ID USER_LED_SYNC
 
 typedef struct {
     uint8_t led;
