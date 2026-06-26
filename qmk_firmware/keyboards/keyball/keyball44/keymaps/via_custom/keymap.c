@@ -90,14 +90,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     if (is_keyboard_left()) {
-        // USBが左側
+        // USB左：左手キー row 0〜3 だけ処理
         if (row < 4) {
             led = left_key_to_led[row][col];
+        } else {
+            return true;
         }
     } else {
-        // USBが右側
+        // USB右：右手キー row 4〜7 だけ処理
         if (row >= 4 && row < 8) {
             led = right_key_to_led[row - 4][col];
+        } else {
+            return true;
         }
     }
 
