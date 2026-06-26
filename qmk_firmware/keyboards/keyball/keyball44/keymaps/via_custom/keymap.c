@@ -65,7 +65,7 @@ void oledkit_render_info_user(void) {
 #endif
 
 #define NO_LED 255
-#define RLED(n) ((n) + 30)
+#define RLED(n) ((n) + 29)
 
 static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     // 左手側
