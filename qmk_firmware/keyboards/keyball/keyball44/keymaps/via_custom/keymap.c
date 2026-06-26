@@ -63,3 +63,24 @@ void oledkit_render_info_user(void) {
     keyball_oled_render_layerinfo();
 }
 #endif
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        uint8_t row = record->event.key.row;
+        uint8_t col = record->event.key.col;
+
+        // まずは確認用：押されたキーの row/col から仮LED番号を作る
+        uint8_t led = row * MATRIX_COLS + col;
+
+        rgblight_setrgb_at(255, 255, 255, led);  // 白で点灯
+    } else {
+        uint8_t row = record->event.key.row;
+        uint8_t col = record->event.key.col;
+
+        uint8_t led = row * MATRIX_COLS + col;
+
+        rgblight_setrgb_at(0, 0, 0, led);        // 離したら消灯
+    }
+
+    return true;
+}
