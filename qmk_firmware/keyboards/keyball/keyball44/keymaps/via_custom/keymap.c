@@ -82,16 +82,19 @@ static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    uint8_t row = record->event.key.row;
-    uint8_t col = record->event.key.col;
+    if (record->event.pressed) {
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }
 
-    uint8_t led = key_to_led[row][col];
+        // どのキーでもLED0を赤く光らせる
+        rgblight_setrgb_at(255, 0, 0, 0);
 
-    if (led != NO_LED && led < RGBLED_NUM) {
-        if (record->event.pressed) {
-            rgblight_setrgb_at(255, 255, 255, led);
+        // rowが0〜3ならLED1、4〜7ならLED2を光らせる
+        if (record->event.key.row < 4) {
+            rgblight_setrgb_at(0, 255, 0, 1);
         } else {
-            rgblight_setrgb_at(0, 0, 0, led);
+            rgblight_setrgb_at(0, 0, 255, 2);
         }
     }
 
