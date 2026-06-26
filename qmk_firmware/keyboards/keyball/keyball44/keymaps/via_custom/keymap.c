@@ -58,11 +58,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #    include "lib/oledkit/oledkit.h"
 
-typedef struct {
-    uint8_t led;
-    bool pressed;
-} keyball_led_sync_t;
-
 void oledkit_render_info_user(void) {
     keyball_oled_render_keyinfo();
     keyball_oled_render_ballinfo();
