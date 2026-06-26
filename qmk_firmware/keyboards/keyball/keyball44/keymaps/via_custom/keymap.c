@@ -80,8 +80,8 @@ static const uint8_t right_key_to_led[4][6] = {
     {10, 13, 17, 20, 23, 26},   // Y U I O P DEL
     {11, 14, 18, 21, 24, 27},   // H J K L ; '
     {12, 15, 19, 22, 25, 28},   // N M , . / \,
-    {NO_LED, 6, NO_LED, NO_LED, 7, 8},
-//    {NO_LED, 5, 4, NO_LED, NO_LED, 1},
+    {NO_LED, 16, NO_LED, NO_LED, NO_LED, NO_LED},
+//    {NO_LED, 16, NO_LED, NO_LED, 2, 1},
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
