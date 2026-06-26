@@ -72,14 +72,16 @@ static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
     {18, 15, 11, 7, 4, 1},      // TAB A S D F G
     {19, 16, 12, 8, 5, 2},      // SHIFT Z X C V B
-    {NO_LED, 13, 9, 27, 28, 29},
+    {NO_LED, 13, 9, NO_LED, NO_LED, NO_LED},
+//    {NO_LED, 13, 9, 27, 28, 29},
 };
 
 static const uint8_t right_key_to_led[4][6] = {
     {10, 13, 17, 20, 23, 26},   // Y U I O P DEL
     {11, 14, 18, 21, 24, 27},   // H J K L ; '
     {12, 15, 19, 22, 25, 28},   // N M , . / \,
-    {5, 4, NO_LED, NO_LED, NO_LED, 1},
+    {NO_LED, NO_LED, NO_LED, NO_LED, NO_LED, 2},
+//    {NO_LED, 5, 4, NO_LED, NO_LED, 1},
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
