@@ -85,35 +85,47 @@ static const uint8_t right_key_to_led[4][6] = {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
-    uint8_t led = NO_LED;
 
     if (col >= 6) {
         return true;
     }
 
     if (row < 4) {
-        led = left_key_to_led[row][col];
+        // 左手キー
+        uint8_t led = left_key_to_led[row][col];
 
-        if (is_keyboard_left()) {
-            if (led != NO_LED) {
-                rgblight_setrgb_at(record->event.pressed ? 255 : 0,
-                                   record->event.pressed ? 255 : 0,
-                                   record->event.pressed ? 255 : 0,
-                                   led);
-            }
-        } else {
-            if (led != NO_LED) {
+        if (led != NO_LED) {
+            if (is_keyboard_left()) {
+                // USB左なら左LEDを直接
+                rgblight_setrgb_at(
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    led
+                );
+            } else {
+                // USB右なら左側slaveへ送る
                 keyball_send_led_event(led, record->event.pressed);
             }
         }
+
     } else {
-        led = right_key_to_led[row - 4][col];
+        // 右手キー
+        uint8_t led = right_key_to_led[row - 4][col];
 
         if (led != NO_LED) {
-            rgblight_setrgb_at(record->event.pressed ? 255 : 0,
-                               record->event.pressed ? 255 : 0,
-                               record->event.pressed ? 255 : 0,
-                               led);
+            if (!is_keyboard_left()) {
+                // USB右なら右LEDを直接
+                rgblight_setrgb_at(
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    led
+                );
+            } else {
+                // USB左なら右側slaveへ送る
+                keyball_send_led_event(led, record->event.pressed);
+            }
         }
     }
 
