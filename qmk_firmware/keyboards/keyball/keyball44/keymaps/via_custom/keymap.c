@@ -65,21 +65,21 @@ void oledkit_render_info_user(void) {
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static uint8_t led = 0;
+
     if (record->event.pressed) {
-        uint8_t row = record->event.key.row;
-        uint8_t col = record->event.key.col;
+        // 全LED消灯
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }
 
-        // まずは確認用：押されたキーの row/col から仮LED番号を作る
-        uint8_t led = row * MATRIX_COLS + col;
+        // 現在のLEDだけ赤く点灯
+        rgblight_setrgb_at(255, 0, 0, led);
 
-        rgblight_setrgb_at(255, 255, 255, led);  // 白で点灯
-    } else {
-        uint8_t row = record->event.key.row;
-        uint8_t col = record->event.key.col;
-
-        uint8_t led = row * MATRIX_COLS + col;
-
-        rgblight_setrgb_at(0, 0, 0, led);        // 離したら消灯
+        led++;
+        if (led >= RGBLED_NUM) {
+            led = 0;
+        }
     }
 
     return true;
