@@ -69,45 +69,29 @@ void oledkit_render_info_user(void) {
 
 static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     // 左手側
-    // ESC, Q, W, E, R, T
-    {17, 14, 10, 6, 3, 0},
-
-    // TAB, A, S, D, F, G
-    {18, 15, 11, 7, 4, 1},
-
-    // SHIFT, Z, X, C, V, B
-    {19, 16, 12, 8, 5, 2},
-
-    // なし, ALT, WIN, 無変換, SPACE, レイヤーキー
-    {NO_LED, 13, 9, 27, 28, 29},
+    {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
+    {18, 15, 11, 7, 4, 1},      // TAB A S D F G
+    {19, 16, 12, 8, 5, 2},      // SHIFT Z X C V B
+    {NO_LED, 13, 9, 27, 28, 29},// なし, ALT, WIN, 無変換, SPACE, レイヤーキー
 
     // 右手側
-    // Y, U, I, O, P, DEL
-    {RLED(23), RLED(5), RLED(11), RLED(15), RLED(17), RLED(21)},
-
-    // H, J, K, L, ;, '
-    {RLED(24), RLED(6), RLED(27), RLED(16), RLED(19), RLED(22)},
-
-    // N, M, ,, ., /, \,
-    {RLED(25), RLED(7), RLED(28), RLED(18), RLED(20), RLED(29)},
-
-    // BS, ENTER, 無変換, ALT, PRINT, なし
-    {RLED(26), RLED(8), NO_LED, NO_LED, RLED(9), NO_LED},
+    {RLED(26), RLED(23), RLED(20), RLED(17), RLED(13), RLED(10)}, // Y U I O P DEL
+    {RLED(27), RLED(24), RLED(21), RLED(18), RLED(14), RLED(11)}, // H J K L ; '
+    {RLED(28), RLED(25), RLED(22), RLED(19), RLED(15), RLED(12)}, // N M , . / \,
+    {RLED(0),  RLED(1),  NO_LED,   NO_LED,   RLED(16), NO_LED},   // BS ENTER ? ? PRINT
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    static uint8_t led = 0;
+    uint8_t row = record->event.key.row;
+    uint8_t col = record->event.key.col;
 
-    if (record->event.pressed) {
-        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
-            rgblight_setrgb_at(0, 0, 0, i);
-        }
+    uint8_t led = key_to_led[row][col];
 
-        rgblight_setrgb_at(255, 0, 0, led);
-
-        led++;
-        if (led >= RGBLED_NUM) {
-            led = 0;
+    if (led != NO_LED && led < RGBLED_NUM) {
+        if (record->event.pressed) {
+            rgblight_setrgb_at(255, 255, 255, led);
+        } else {
+            rgblight_setrgb_at(0, 0, 0, led);
         }
     }
 
