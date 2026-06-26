@@ -115,7 +115,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         if (led != NO_LED) {
             if (!is_keyboard_left()) {
-                uint8_t actual_led = led + 29;
+                uint8_t actual_led = led + 30;
                 // USB右なら右LEDを直接
                 rgblight_setrgb_at(
                     record->event.pressed ? 255 : 0,
