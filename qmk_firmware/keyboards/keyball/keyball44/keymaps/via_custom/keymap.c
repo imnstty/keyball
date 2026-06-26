@@ -66,25 +66,40 @@ void oledkit_render_info_user(void) {
 
 #define NO_LED 255
 
-static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
-    // 左手側
+static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
     {18, 15, 11, 7, 4, 1},      // TAB A S D F G
     {19, 16, 12, 8, 5, 2},      // SHIFT Z X C V B
-    {NO_LED, 13, 9, 27, 28, 29},// なし, ALT, WIN, 無変換, SPACE, レイヤーキー
+    {NO_LED, 13, 9, 28, 29, NO_LED},
+};
 
-    // 右手側：ローカルLED番号
-    {10, 13, 17, 20, 23, 26}, // Y U I O P DEL
-    {11, 14, 18, 21, 24, 27}, // H J K L ; '
-    {12, 15, 19, 22, 25, 28}, // N M , . / \,
-    {5,  4,  NO_LED, NO_LED, 1, NO_LED}, // BS ENTER ? ? PRINT
+static const uint8_t right_key_to_led[4][6] = {
+    {10, 13, 17, 20, 23, 26},   // Y U I O P DEL
+    {11, 14, 18, 21, 24, 27},   // H J K L ; '
+    {12, 15, 19, 22, 25, 28},   // N M , . / \,
+    {NO_LED, NO_LED, NO_LED, NO_LED, NO_LED, NO_LED},
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
+    uint8_t led = NO_LED;
 
-    uint8_t led = key_to_led[row][col];
+    if (col >= 6) {
+        return true;
+    }
+
+    if (is_keyboard_left()) {
+        // USBが左側
+        if (row < 4) {
+            led = left_key_to_led[row][col];
+        }
+    } else {
+        // USBが右側
+        if (row >= 4 && row < 8) {
+            led = right_key_to_led[row - 4][col];
+        }
+    }
 
     if (led != NO_LED && led < RGBLED_NUM) {
         if (record->event.pressed) {
