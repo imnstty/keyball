@@ -74,10 +74,10 @@ static const uint8_t key_to_led[MATRIX_ROWS][MATRIX_COLS] = {
     {NO_LED, 13, 9, 27, 28, 29},// なし, ALT, WIN, 無変換, SPACE, レイヤーキー
 
     // 右手側：ローカルLED番号
-    {26, 23, 20, 17, 13, 10}, // Y U I O P DEL
-    {27, 24, 21, 18, 14, 11}, // H J K L ; '
-    {28, 25, 22, 19, 15, 12}, // N M , . / \,
-    {0,  1,  NO_LED, NO_LED, 16, NO_LED}, // BS ENTER ? ? PRINT
+    {10, 13, 17, 20, 23, 26}, // Y U I O P DEL
+    {11, 14, 18, 21, 24, 27}, // H J K L ; '
+    {12, 15, 19, 22, 25, 28}, // N M , . / \,
+    {5,  4,  NO_LED, NO_LED, 1, NO_LED}, // BS ENTER ? ? PRINT
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -95,4 +95,4 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     return true;
-}
+}yyyhnrrrr
