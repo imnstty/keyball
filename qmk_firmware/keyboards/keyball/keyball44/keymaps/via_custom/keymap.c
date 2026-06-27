@@ -20,7 +20,7 @@ along with this program.  If not, see <http://gnu.org>.
 
 #include "quantum.h"
 
-void keyball_send_led_event(uint8_t led, bool pressed);
+//void keyball_send_led_event(uint8_t led, bool pressed);
 
 // Keyball LED Event Synchronization
 enum custom_keycodes {
@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [3] = LAYOUT_universal(
-    KEM_TOG  , AML_TO   , AML_I50  , AML_D50  , _______  , RGB_TOG  ,                                        RGB_M_P  , RGB_M_B  , RGB_M_R  , RGB_M_SW , RGB_M_SN , RGB_M_K  ,
+    RGB_TOG  , AML_TO   , AML_I50  , AML_D50  , _______  , _______  ,                                        RGB_M_P  , RGB_M_B  , RGB_M_R  , RGB_M_SW , RGB_M_SN , RGB_M_K  ,
     RGB_MOD  , RGB_HUI  , RGB_SAI  , RGB_VAI  , _______  , SCRL_DVI ,                                        RGB_M_X  , RGB_M_G  , RGB_M_T  , RGB_M_TW , _______  , _______  ,
     RGB_RMOD , RGB_HUD  , RGB_SAD  , RGB_VAD  , _______  , SCRL_DVD ,                                        CPI_D1K  , CPI_D100 , CPI_I100 , CPI_I1K  , _______  , KBC_SAVE ,
                   QK_BOOT  , KBC_RST  , _______  ,        _______  , _______  ,                   _______  , _______  , _______       , KBC_RST  , QK_BOOT
@@ -152,4 +152,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     return true;
+}
+
+// Layer 3連動スクロール処理(KEM)
+layer_state_t layer_state_set_user(layer_state_t state) {
+    keyball_set_scroll_mode(layer_state_cmp(state, 3));
+    return state;
 }
