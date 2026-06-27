@@ -55,9 +55,14 @@ keyball_t keyball = {
 };
 
 // Keyball LED Event Synchronization
+#define KEYBALL_KEM_CMD_LED   0
+#define KEYBALL_KEM_CMD_STATE 1
+
 typedef struct {
+    uint8_t cmd;
     uint8_t led;
     bool pressed;
+    bool enabled;
 } keyball_led_event_t;
 
 static bool keyball_kem_enabled = KEYBALL_KEM_DEFAULT;
@@ -389,11 +394,22 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
 #ifdef RGBLIGHT_ENABLE
     const keyball_led_event_t *ev = (const keyball_led_event_t *)in_data;
 
+    if (ev->cmd == KEYBALL_KEM_CMD_STATE) {
+        keyball_kem_enabled = ev->enabled;
+
+        if (!keyball_kem_enabled) {
+            for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+                rgblight_setrgb_at(0, 0, 0, i);
+            }
+        }
+        return;
+    }
+
     if (!keyball_kem_enabled) {
         return;
     }
 
-    if (ev->led < RGBLED_NUM) {
+    if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
         rgblight_setrgb_at(ev->pressed ? 255 : 0,
                            ev->pressed ? 255 : 0,
                            ev->pressed ? 255 : 0,
@@ -553,8 +569,9 @@ void keyball_oled_render_layerinfo(void) {
 // Keyball LED Event Synchronization
 void keyball_oled_render_keminfo(void) {
 #ifdef OLED_ENABLE
-    oled_write_P(PSTR("KEM:"), false);
+    oled_write_P(PSTR("KEM \xB1"), false);
     oled_write_P(keyball_get_kem_enabled() ? PSTR("ON ") : PSTR("OFF"), false);
+    oled_write_P(PSTR(" "), false);
 #endif
 }
 
@@ -624,6 +641,8 @@ void keyball_set_kem_enabled(bool enable) {
         }
     }
 #endif
+
+    keyball_send_kem_state_event();
 }
 
 void keyball_toggle_kem(void) {
@@ -636,8 +655,20 @@ void keyball_send_led_event(uint8_t led, bool pressed) {
         return;
     }
 
+    led_event.cmd = KEYBALL_KEM_CMD_LED;
     led_event.led = led;
     led_event.pressed = pressed;
+    led_event.enabled = keyball_kem_enabled;
+    led_event_pending = true;
+#endif
+}
+
+static void keyball_send_kem_state_event(void) {
+#ifdef SPLIT_KEYBOARD
+    led_event.cmd = KEYBALL_KEM_CMD_STATE;
+    led_event.led = 0;
+    led_event.pressed = false;
+    led_event.enabled = keyball_kem_enabled;
     led_event_pending = true;
 #endif
 }
