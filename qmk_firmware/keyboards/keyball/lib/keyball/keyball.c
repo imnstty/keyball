@@ -407,9 +407,9 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
         return;
     }
 
-    if (!keyball_kem_enabled) {
-        return;
-    }
+    // if (!keyball_kem_enabled) {
+    //     return;
+    // }
 
     if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
         rgblight_setrgb_at(ev->pressed ? 255 : 0,
