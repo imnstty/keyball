@@ -450,6 +450,7 @@ static void rpc_kem_sync_handler(uint8_t in_buflen, const void *in_data,
     } else {
         // KEM OFF：RGBLIGHT通常表示へ戻す。
         rgblight_enable_noeeprom();
+        rgblight_mode_noeeprom(rgblight_get_mode());
     }
 #endif
 }
@@ -679,6 +680,7 @@ void keyball_set_kem_enabled(bool enable) {
     } else {
         // KEM OFF：RGBLIGHT通常表示へ戻す。
         rgblight_enable_noeeprom();
+        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
     }
 #endif
 
