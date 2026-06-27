@@ -416,19 +416,12 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
         return;
     }
 
-    if (ev->led == 10) {
+    if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
         rgblight_setrgb_at(ev->pressed ? 255 : 0,
-                           0,
-                           0,
-                           10);
+                           ev->pressed ? 255 : 0,
+                           ev->pressed ? 255 : 0,
+                           ev->led);
     }
-
-    //if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
-    //    rgblight_setrgb_at(ev->pressed ? 255 : 0,
-    //                       ev->pressed ? 255 : 0,
-    //                       ev->pressed ? 255 : 0,
-    //                       ev->led);
-    //}
 #endif
 }
 
@@ -686,8 +679,13 @@ void keyball_set_kem_enabled(bool enable) {
         }
     } else {
         // KEM OFF：RGBLIGHT通常表示へ戻す。
-        rgblight_enable_noeeprom();
-        rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+        //rgblight_enable_noeeprom();
+        //rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+        
+        // KEM OFF：いったん通常RGBへ戻さず、全消灯
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }        
     }
 #endif
 
