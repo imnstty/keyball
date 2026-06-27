@@ -681,7 +681,7 @@ void keyball_set_kem_enabled(bool enable) {
         // KEM OFF：RGBLIGHT通常表示へ戻す。
         //rgblight_enable_noeeprom();
         //rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-        
+
         // KEM OFF：いったん通常RGBへ戻さず、全消灯
         for (uint8_t i = 0; i < RGBLED_NUM; i++) {
             rgblight_setrgb_at(0, 0, 0, i);
@@ -724,7 +724,7 @@ void keyboard_post_init_kb(void) {
         transaction_register_rpc(KEYBALL_GET_MOTION, rpc_get_motion_handler);
         transaction_register_rpc(KEYBALL_SET_CPI, rpc_set_cpi_handler);
         transaction_register_rpc(USER_LED_SYNC, rpc_led_sync_handler);
-        transaction_register_rpc(USER_KEM_SYNC, rpc_kem_sync_handler);
+        //transaction_register_rpc(USER_KEM_SYNC, rpc_kem_sync_handler);
     }
 #endif
 
@@ -755,7 +755,7 @@ void housekeeping_task_kb(void) {
             rpc_set_cpi_invoke();
         }
         rpc_led_sync_invoke();
-        rpc_kem_sync_invoke();
+        //rpc_kem_sync_invoke();
     }
 }
 #endif
