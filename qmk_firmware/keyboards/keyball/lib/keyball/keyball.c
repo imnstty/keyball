@@ -435,35 +435,35 @@ static void rpc_led_sync_invoke(void) {
     }
 }
 
-static void rpc_kem_sync_handler(uint8_t in_buflen, const void *in_data,
-                                 uint8_t out_buflen, void *out_data) {
-    const keyball_kem_state_t *st = (const keyball_kem_state_t *)in_data;
+//static void rpc_kem_sync_handler(uint8_t in_buflen, const void *in_data,
+//                                 uint8_t out_buflen, void *out_data) {
+//    const keyball_kem_state_t *st = (const keyball_kem_state_t *)in_data;
 
-    keyball_kem_enabled = st->enabled;
+//    keyball_kem_enabled = st->enabled;
 
-#ifdef RGBLIGHT_ENABLE
-    if (keyball_kem_enabled) {
+//#ifdef RGBLIGHT_ENABLE
+//    if (keyball_kem_enabled) {
         // KEM ON：押しキー発光モード。通常RGBは消す。
-        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
-            rgblight_setrgb_at(0, 0, 0, i);
-        }
-    } else {
+//        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+//            rgblight_setrgb_at(0, 0, 0, i);
+//        }
+//    } else {
         // KEM OFF：RGBLIGHT通常表示へ戻す。
-        rgblight_enable_noeeprom();
-        rgblight_mode_noeeprom(rgblight_get_mode());
-    }
-#endif
-}
+//        rgblight_enable_noeeprom();
+//        rgblight_mode_noeeprom(rgblight_get_mode());
+//    }
+//#endif
+//}
 
-static void rpc_kem_sync_invoke(void) {
-    if (!kem_state_pending) {
-        return;
-    }
-
-    if (transaction_rpc_send(USER_KEM_SYNC, sizeof(kem_state), &kem_state)) {
-        kem_state_pending = false;
-    }
-}
+//static void rpc_kem_sync_invoke(void) {
+//    if (!kem_state_pending) {
+//        return;
+//    }
+//
+//    if (transaction_rpc_send(USER_KEM_SYNC, sizeof(kem_state), &kem_state)) {
+//        kem_state_pending = false;
+//    }
+//}
 
 #endif
 
