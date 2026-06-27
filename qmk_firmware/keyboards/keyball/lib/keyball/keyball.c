@@ -76,8 +76,6 @@ typedef struct {
 static bool kem_state_pending = false;
 static keyball_kem_state_t kem_state = {0};
 
-static void keyball_send_kem_state_event(void);
-
 //////////////////////////////////////////////////////////////////////////////
 // Hook points
 
@@ -703,16 +701,6 @@ void keyball_send_led_event(uint8_t led, bool pressed) {
     led_event.cmd = KEYBALL_KEM_CMD_LED;
     led_event.led = led;
     led_event.pressed = pressed;
-    led_event.enabled = keyball_kem_enabled;
-    led_event_pending = true;
-#endif
-}
-
-static void keyball_send_kem_state_event(void) {
-#ifdef SPLIT_KEYBOARD
-    led_event.cmd = KEYBALL_KEM_CMD_STATE;
-    led_event.led = 0;
-    led_event.pressed = false;
     led_event.enabled = keyball_kem_enabled;
     led_event_pending = true;
 #endif
