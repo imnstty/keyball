@@ -100,9 +100,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
-    //if (!keyball_get_kem_enabled()) {
-    //    return true;
-    //}
+    if (!keyball_get_kem_enabled()) {
+        return true;
+    }
 
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;

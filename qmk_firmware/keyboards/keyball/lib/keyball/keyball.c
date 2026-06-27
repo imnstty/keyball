@@ -69,6 +69,13 @@ static bool keyball_kem_enabled = KEYBALL_KEM_DEFAULT;
 static bool led_event_pending = false;
 static keyball_led_event_t led_event = {0};
 
+typedef struct {
+    bool enabled;
+} keyball_kem_state_t;
+
+static bool kem_state_pending = false;
+static keyball_kem_state_t kem_state = {0};
+
 static void keyball_send_kem_state_event(void);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -430,6 +437,35 @@ static void rpc_led_sync_invoke(void) {
     }
 }
 
+static void rpc_kem_sync_handler(uint8_t in_buflen, const void *in_data,
+                                 uint8_t out_buflen, void *out_data) {
+    const keyball_kem_state_t *st = (const keyball_kem_state_t *)in_data;
+
+    keyball_kem_enabled = st->enabled;
+
+#ifdef RGBLIGHT_ENABLE
+    if (keyball_kem_enabled) {
+        // KEM ON：押しキー発光モード。通常RGBは消す。
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }
+    } else {
+        // KEM OFF：RGBLIGHT通常表示へ戻す。
+        rgblight_enable_noeeprom();
+    }
+#endif
+}
+
+static void rpc_kem_sync_invoke(void) {
+    if (!kem_state_pending) {
+        return;
+    }
+
+    if (transaction_rpc_send(USER_KEM_SYNC, sizeof(kem_state), &kem_state)) {
+        kem_state_pending = false;
+    }
+}
+
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -637,14 +673,21 @@ void keyball_set_kem_enabled(bool enable) {
     keyball_kem_enabled = enable;
 
 #ifdef RGBLIGHT_ENABLE
-    if (!enable) {
+    if (keyball_kem_enabled) {
+        // KEM ON：押しキー発光モード。通常RGBは消す。
         for (uint8_t i = 0; i < RGBLED_NUM; i++) {
             rgblight_setrgb_at(0, 0, 0, i);
         }
+    } else {
+        // KEM OFF：RGBLIGHT通常表示へ戻す。
+        rgblight_enable_noeeprom();
     }
 #endif
 
-    keyball_send_kem_state_event();
+#ifdef SPLIT_KEYBOARD
+    kem_state.enabled = keyball_kem_enabled;
+    kem_state_pending = true;
+#endif
 }
 
 void keyball_toggle_kem(void) {
@@ -686,6 +729,7 @@ void keyboard_post_init_kb(void) {
         transaction_register_rpc(KEYBALL_GET_MOTION, rpc_get_motion_handler);
         transaction_register_rpc(KEYBALL_SET_CPI, rpc_set_cpi_handler);
         transaction_register_rpc(USER_LED_SYNC, rpc_led_sync_handler);
+        transaction_register_rpc(USER_KEM_SYNC, rpc_kem_sync_handler);
     }
 #endif
 
@@ -716,6 +760,7 @@ void housekeeping_task_kb(void) {
             rpc_set_cpi_invoke();
         }
         rpc_led_sync_invoke();
+        rpc_kem_sync_invoke();
     }
 }
 #endif
