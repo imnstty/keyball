@@ -553,8 +553,8 @@ void keyball_oled_render_layerinfo(void) {
 // Keyball LED Event Synchronization
 void keyball_oled_render_keminfo(void) {
 #ifdef OLED_ENABLE
-    oled_write_P(PSTR("KEM \xB1"), false);
-    oled_write_P(keyball_kem_enabled ? PSTR("ON ") : PSTR("OFF"), false);
+    oled_write_P(PSTR("KEM:"), false);
+    oled_write_P(keyball_get_kem_enabled() ? PSTR("ON ") : PSTR("OFF"), false);
 #endif
 }
 
