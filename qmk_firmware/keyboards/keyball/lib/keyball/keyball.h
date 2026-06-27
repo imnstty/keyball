@@ -49,6 +49,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define KEYBALL_SCROLLSNAP_TENSION_THRESHOLD 12
 #endif
 
+#ifndef KEYBALL_KEM_DEFAULT
+#    define KEYBALL_KEM_DEFAULT true
+#endif
+
 /// Specify SROM ID to be uploaded PMW3360DW (optical sensor).  It will be
 /// enabled high CPI setting or so.  Valid valus are 0x04 or 0x81.  Define this
 /// in your config.h to be enable.  Please note that using this option will
@@ -270,3 +274,10 @@ uint8_t keyball_get_cpi(void);
 /// In addition, if you do not upload SROM, the maximum value will be limited
 /// to 35 (3500CPI).
 void keyball_set_cpi(uint8_t cpi);
+
+/// Keyball LED Event Synchronization
+bool keyball_get_kem_enabled(void);
+void keyball_set_kem_enabled(bool enable);
+void keyball_toggle_kem(void);
+void keyball_send_led_event(uint8_t led, bool pressed);
+void keyball_oled_render_keminfo(void);

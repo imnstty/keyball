@@ -54,6 +54,16 @@ keyball_t keyball = {
     .pressing_keys = { BL, BL, BL, BL, BL, BL, 0 },
 };
 
+// Keyball LED Event Synchronization
+typedef struct {
+    uint8_t led;
+    bool pressed;
+} keyball_led_event_t;
+
+static bool keyball_kem_enabled = KEYBALL_KEM_DEFAULT;
+static bool led_event_pending = false;
+static keyball_led_event_t led_event = {0};
+
 //////////////////////////////////////////////////////////////////////////////
 // Hook points
 
@@ -404,6 +414,7 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
 #endif
 }
 
+// Keyball LED Event Synchronization
 static void rpc_led_sync_invoke(void) {
     if (!led_event_pending) {
         return;
@@ -415,6 +426,34 @@ static void rpc_led_sync_invoke(void) {
 }
 
 #endif
+
+static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
+                                 uint8_t out_buflen, void *out_data) {
+#ifdef RGBLIGHT_ENABLE
+    const keyball_led_event_t *ev = (const keyball_led_event_t *)in_data;
+
+    if (!keyball_kem_enabled) {
+        return;
+    }
+
+    if (ev->led < RGBLED_NUM) {
+        rgblight_setrgb_at(ev->pressed ? 255 : 0,
+                           ev->pressed ? 255 : 0,
+                           ev->pressed ? 255 : 0,
+                           ev->led);
+    }
+#endif
+}
+
+static void rpc_led_sync_invoke(void) {
+    if (!led_event_pending || !keyball_kem_enabled) {
+        return;
+    }
+
+    if (transaction_rpc_send(USER_LED_SYNC, sizeof(led_event), &led_event)) {
+        led_event_pending = false;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // OLED utility
@@ -552,6 +591,14 @@ void keyball_oled_render_layerinfo(void) {
 #endif
 }
 
+// Keyball LED Event Synchronization
+void keyball_oled_render_keminfo(void) {
+#ifdef OLED_ENABLE
+    oled_write_P(PSTR("KEM \xB1"), false);
+    oled_write_P(keyball_kem_enabled ? PSTR("ON ") : PSTR("OFF"), false);
+#endif
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Public API functions
 
@@ -601,6 +648,39 @@ void keyball_set_cpi(uint8_t cpi) {
     if (keyball.this_have_ball) {
         pmw3360_cpi_set(cpi == 0 ? CPI_DEFAULT - 1 : cpi - 1);
     }
+}
+
+bool keyball_get_kem_enabled(void) {
+    return keyball_kem_enabled;
+}
+
+// Keyball LED Event Synchronization
+void keyball_set_kem_enabled(bool enable) {
+    keyball_kem_enabled = enable;
+
+#ifdef RGBLIGHT_ENABLE
+    if (!enable) {
+        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+            rgblight_setrgb_at(0, 0, 0, i);
+        }
+    }
+#endif
+}
+
+void keyball_toggle_kem(void) {
+    keyball_set_kem_enabled(!keyball_kem_enabled);
+}
+
+void keyball_send_led_event(uint8_t led, bool pressed) {
+#ifdef SPLIT_KEYBOARD
+    if (!keyball_kem_enabled) {
+        return;
+    }
+
+    led_event.led = led;
+    led_event.pressed = pressed;
+    led_event_pending = true;
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////

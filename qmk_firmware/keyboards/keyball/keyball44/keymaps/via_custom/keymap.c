@@ -22,6 +22,11 @@ along with this program.  If not, see <http://gnu.org>.
 
 void keyball_send_led_event(uint8_t led, bool pressed);
 
+// Keyball LED Event Synchronization
+enum custom_keycodes {
+    KEM_TOG = KEYBALL_SAFE_RANGE,
+};
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
@@ -63,6 +68,7 @@ void oledkit_render_info_user(void) {
     keyball_oled_render_keyinfo();
     keyball_oled_render_ballinfo();
     keyball_oled_render_layerinfo();
+    keyball_oled_render_keminfo();
 }
 #endif
 
@@ -85,6 +91,19 @@ static const uint8_t right_key_to_led[4][6] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    // Keyball LED Event Synchronization
+    if (keycode == KEM_TOG) {
+        if (record->event.pressed) {
+            keyball_toggle_kem();
+        }
+        return false;
+    }
+
+    if (!keyball_get_kem_enabled()) {
+        return true;
+    }
+
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
 
