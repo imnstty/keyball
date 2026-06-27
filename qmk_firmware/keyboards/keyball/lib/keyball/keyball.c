@@ -383,50 +383,7 @@ static void rpc_set_cpi_invoke(void) {
     keyball.cpi_changed = false;
 }
 
-typedef struct {
-    uint8_t led;
-    bool pressed;
-} keyball_led_event_t;
-
-static bool led_event_pending = false;
-static keyball_led_event_t led_event = {0};
-
-void keyball_send_led_event(uint8_t led, bool pressed) {
-#ifdef SPLIT_KEYBOARD
-    led_event.led = led;
-    led_event.pressed = pressed;
-    led_event_pending = true;
-#endif
-}
-
-static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
-                                 uint8_t out_buflen, void *out_data) {
-#ifdef RGBLIGHT_ENABLE
-    const keyball_led_event_t *ev = (const keyball_led_event_t *)in_data;
-
-    if (ev->led < RGBLED_NUM) {
-        if (ev->pressed) {
-            rgblight_setrgb_at(255, 255, 255, ev->led);
-        } else {
-            rgblight_setrgb_at(0, 0, 0, ev->led);
-        }
-    }
-#endif
-}
-
 // Keyball LED Event Synchronization
-static void rpc_led_sync_invoke(void) {
-    if (!led_event_pending) {
-        return;
-    }
-
-    if (transaction_rpc_send(USER_LED_SYNC, sizeof(led_event), &led_event)) {
-        led_event_pending = false;
-    }
-}
-
-#endif
-
 static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
                                  uint8_t out_buflen, void *out_data) {
 #ifdef RGBLIGHT_ENABLE
