@@ -416,12 +416,19 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
         return;
     }
 
-    if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
+    if (ev->led == 10) {
         rgblight_setrgb_at(ev->pressed ? 255 : 0,
-                           ev->pressed ? 255 : 0,
-                           ev->pressed ? 255 : 0,
-                           ev->led);
+                           0,
+                           0,
+                           10);
     }
+
+    //if (ev->cmd == KEYBALL_KEM_CMD_LED && ev->led < RGBLED_NUM) {
+    //    rgblight_setrgb_at(ev->pressed ? 255 : 0,
+    //                       ev->pressed ? 255 : 0,
+    //                       ev->pressed ? 255 : 0,
+    //                       ev->led);
+    //}
 #endif
 }
 
