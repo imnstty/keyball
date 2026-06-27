@@ -653,9 +653,9 @@ void keyball_toggle_kem(void) {
 
 void keyball_send_led_event(uint8_t led, bool pressed) {
 #ifdef SPLIT_KEYBOARD
-    if (!keyball_kem_enabled) {
-        return;
-    }
+    // if (!keyball_kem_enabled) {
+    //     return;
+    // }
 
     led_event.cmd = KEYBALL_KEM_CMD_LED;
     led_event.led = led;
