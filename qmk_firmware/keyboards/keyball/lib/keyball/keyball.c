@@ -69,6 +69,8 @@ static bool keyball_kem_enabled = KEYBALL_KEM_DEFAULT;
 static bool led_event_pending = false;
 static keyball_led_event_t led_event = {0};
 
+static void keyball_send_kem_state_event(void);
+
 //////////////////////////////////////////////////////////////////////////////
 // Hook points
 
