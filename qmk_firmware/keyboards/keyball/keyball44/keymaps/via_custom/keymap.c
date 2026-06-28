@@ -60,9 +60,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
+#define LAYER_RGB_VAL 50
+
 layer_state_t layer_state_set_user(layer_state_t state) {
+    uint8_t layer = get_highest_layer(state);
+
     // Auto enable scroll mode when the highest layer is 3
-    keyball_set_scroll_mode(get_highest_layer(state) == 3);
+    keyball_set_scroll_mode(layer == 3);
+
+#ifdef RGBLIGHT_ENABLE
+    switch (layer) {
+        case 0:
+            rgblight_sethsv_noeeprom(HSV_WHITE.h, HSV_WHITE.s, LAYER_RGB_VAL);
+            break;
+        case 1:
+            rgblight_sethsv_noeeprom(HSV_CYAN.h, HSV_CYAN.s, LAYER_RGB_VAL);
+            break;
+        case 2:
+            rgblight_sethsv_noeeprom(HSV_YELLOW.h, HSV_YELLOW.s, LAYER_RGB_VAL);
+            break;
+        case 3:
+            rgblight_sethsv_noeeprom(HSV_GREEN.h, HSV_GREEN.s, LAYER_RGB_VAL);
+            break;
+        case 4:
+            rgblight_sethsv_noeeprom(HSV_PURPLE.h, HSV_PURPLE.s, LAYER_RGB_VAL);
+            break;
+        case 5:
+            rgblight_sethsv_noeeprom(HSV_RED.h, HSV_RED.s, LAYER_RGB_VAL);
+            break;
+    }
+#endif
+
     return state;
 }
 
