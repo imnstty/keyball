@@ -71,22 +71,27 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #ifdef RGBLIGHT_ENABLE
     switch (layer) {
         case 0:
-            rgblight_sethsv_noeeprom(HSV_WHITE.h, HSV_WHITE.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(0,   0,   LAYER_RGB_VAL);   // White
             break;
+
         case 1:
-            rgblight_sethsv_noeeprom(HSV_CYAN.h, HSV_CYAN.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(128, 255, LAYER_RGB_VAL);   // Cyan
             break;
+
         case 2:
-            rgblight_sethsv_noeeprom(HSV_YELLOW.h, HSV_YELLOW.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(43,  255, LAYER_RGB_VAL);   // Yellow
             break;
+
         case 3:
-            rgblight_sethsv_noeeprom(HSV_GREEN.h, HSV_GREEN.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(85,  255, LAYER_RGB_VAL);   // Green
             break;
+
         case 4:
-            rgblight_sethsv_noeeprom(HSV_PURPLE.h, HSV_PURPLE.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(191, 255, LAYER_RGB_VAL);   // Purple
             break;
+
         case 5:
-            rgblight_sethsv_noeeprom(HSV_RED.h, HSV_RED.s, LAYER_RGB_VAL);
+            rgblight_sethsv_noeeprom(0,   255, LAYER_RGB_VAL);   // Red
             break;
     }
 #endif
