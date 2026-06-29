@@ -22,36 +22,31 @@
  * --------------------------------------------------------------------
  * v1.0  2026-06-29  Initial version
  */
+/*
+ * --------------------------------------------------------------------
+ * Command Layer Module
+ * --------------------------------------------------------------------
+ *
+ * Implements custom command key processing.
+ *
+ * Current status:
+ *   - Framework only
+ *   - No active command assigned
+ *
+ * Author : Tetsuya Imanishi
+ * Version: 1.0
+ * --------------------------------------------------------------------
+ */
 
 #include "command_layer.h"
 
-// --------------------------------------------------------------------
-// Physical key state
-// --------------------------------------------------------------------
-
-static bool cmd_j = false;
-static bool cmd_n = false;
-
 bool command_process(uint16_t keycode, keyrecord_t *record)
 {
-    uint8_t row = record->event.key.row;
-    uint8_t col = record->event.key.col;
-
-    // J position
-    if (row == 5 && col == 4) {
-        cmd_j = record->event.pressed;
-    }
-
-    // N position
-    if (row == 6 && col == 5) {
-        cmd_n = record->event.pressed;
-    }
-
-    if (cmd_j && cmd_n) {
-        layer_on(5);
-    } else {
-        layer_off(5);
-    }
+    // Reserved for future command processing.
+    // Physical key position can be obtained by:
+    //
+    // uint8_t row = record->event.key.row;
+    // uint8_t col = record->event.key.col;
 
     return true;
 }
