@@ -20,10 +20,10 @@
  * --------------------------------------------------------------------
  * v1.0  2026-06-29  Initial version
  */
- 
+
 #pragma once
 
 #include QMK_KEYBOARD_H
 
-bool command_layer_process(uint16_t keycode, keyrecord_t *record);
-void command_layer_matrix_scan(void);
+bool command_process(uint16_t keycode, keyrecord_t *record);
+void command_matrix_scan(void);
