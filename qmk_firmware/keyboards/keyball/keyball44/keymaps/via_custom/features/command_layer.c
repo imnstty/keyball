@@ -47,6 +47,12 @@ bool command_process(uint16_t keycode, keyrecord_t *record)
         cmd_n = record->event.pressed;
     }
 
+    if (cmd_j && cmd_n) {
+        layer_on(5);
+    } else {
+        layer_off(5);
+    }
+
     return true;
 }
 
