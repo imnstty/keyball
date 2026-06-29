@@ -6,5 +6,5 @@ VIA_ENABLE = yes
 
 LTO_ENABLE = yes
 
-// Command Layer
+# Command Layer
 SRC += features/command_layer.c
