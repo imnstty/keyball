@@ -134,6 +134,10 @@ static const uint8_t right_key_to_led[4][6] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
+    if (!command_layer_process(keycode, record)) {
+    return false;
+    }
+
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
 
