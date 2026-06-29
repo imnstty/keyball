@@ -20,6 +20,9 @@ along with this program.  If not, see <http://gnu.org>.
 
 #include "quantum.h"
 
+// Command Layer
+#include "features/command_layer.h"
+
 //void keyball_send_led_event(uint8_t led, bool pressed);
 
 // Keyball LED Event Synchronization
@@ -113,25 +116,6 @@ void oledkit_render_info_user(void) {
 
 #define NO_LED 255
 
-// J+N Command Layer
-static bool cmd_j_pressed = false;
-static bool cmd_n_pressed = false;
-static bool cmd_layer5_on = false;
-
-static void update_command_layer(void) {
-    if (cmd_j_pressed && cmd_n_pressed) {
-        if (!cmd_layer5_on) {
-            layer_on(5);
-            cmd_layer5_on = true;
-        }
-    } else {
-        if (cmd_layer5_on) {
-            layer_off(5);
-            cmd_layer5_on = false;
-        }
-    }
-}
-
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
     {18, 15, 11, 7, 4, 1},      // TAB A S D F G
@@ -152,32 +136,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
-
-    // 物理位置で判定：右手J位置 = row 5 col 1、右手N位置 = row 6 col 0
-    if (row == 5 && col == 1) {
-        cmd_j_pressed = record->event.pressed;
-        update_command_layer();
-    }
-
-    if (row == 6 && col == 0) {
-        cmd_n_pressed = record->event.pressed;
-        update_command_layer();
-    }
-
-    // Keyball LED Event Synchronization
-    if (keycode == KEM_TOG) {
-        if (record->event.pressed) {
-            keyball_toggle_kem();
-        }
-        return false;
-    }
-
-    if (!keyball_get_kem_enabled()) {
-        return true;
-    }
-
-    //uint8_t row = record->event.key.row;
-    //uint8_t col = record->event.key.col;
 
     if (col >= 6) {
         return true;
