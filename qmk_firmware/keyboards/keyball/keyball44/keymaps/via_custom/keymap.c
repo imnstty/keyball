@@ -27,6 +27,34 @@ enum custom_keycodes {
     KEM_TOG = KEYBALL_SAFE_RANGE,
 };
 
+// COMBO Key event
+enum combo_events {
+    COMBO_JN_LAYER5,
+    COMBO_LENGTH
+};
+
+uint16_t COMBO_LEN = COMBO_LENGTH;
+
+const uint16_t PROGMEM jn_layer5_combo[] = {
+    KC_J, KC_N, COMBO_END
+};
+
+combo_t key_combos[] = {
+    [COMBO_JN_LAYER5] = COMBO_ACTION(jn_layer5_combo),
+};
+
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    switch (combo_index) {
+        case COMBO_JN_LAYER5:
+            if (pressed) {
+                layer_on(5);
+            } else {
+                layer_off(5);
+            }
+            break;
+    }
+}
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)

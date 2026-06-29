@@ -40,5 +40,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define DYNAMIC_KEYMAP_LAYER_COUNT 6
 
+// Tap & Hold settings
+#define TAPPING_TERM 170
 #define PERMISSIVE_HOLD
 #define RETRO_TAPPING
+
+// COMBO settings
+#define COMBO_TERM 40
