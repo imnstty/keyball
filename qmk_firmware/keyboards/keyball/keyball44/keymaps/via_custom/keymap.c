@@ -27,34 +27,6 @@ enum custom_keycodes {
     KEM_TOG = KEYBALL_SAFE_RANGE,
 };
 
-// COMBO Key event
-enum combo_events {
-    COMBO_JN_LAYER5,
-    COMBO_LENGTH
-};
-
-uint16_t COMBO_LEN = COMBO_LENGTH;
-
-const uint16_t PROGMEM jn_layer5_combo[] = {
-    KC_J, KC_N, COMBO_END
-};
-
-combo_t key_combos[] = {
-    [COMBO_JN_LAYER5] = COMBO_ACTION(jn_layer5_combo),
-};
-
-void process_combo_event(uint16_t combo_index, bool pressed) {
-    switch (combo_index) {
-        case COMBO_JN_LAYER5:
-            if (pressed) {
-                layer_on(5);
-            } else {
-                layer_off(5);
-            }
-            break;
-    }
-}
-
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // keymap for default (VIA)
@@ -141,6 +113,10 @@ void oledkit_render_info_user(void) {
 
 #define NO_LED 255
 
+// J+N Command Layer
+static bool j_pressed = false;
+static bool n_pressed = false;
+
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
     {18, 15, 11, 7, 4, 1},      // TAB A S D F G
@@ -158,6 +134,24 @@ static const uint8_t right_key_to_led[4][6] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    // J+N = Momentary Layer5
+    switch (keycode) {
+
+        case KC_J:
+            j_pressed = record->event.pressed;
+            break;
+
+        case KC_N:
+            n_pressed = record->event.pressed;
+            break;
+    }
+
+    if (j_pressed && n_pressed) {
+        layer_on(5);
+    } else {
+        layer_off(5);
+    }
 
     // Keyball LED Event Synchronization
     if (keycode == KEM_TOG) {
