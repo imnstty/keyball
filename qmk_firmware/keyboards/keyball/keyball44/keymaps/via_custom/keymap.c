@@ -114,8 +114,23 @@ void oledkit_render_info_user(void) {
 #define NO_LED 255
 
 // J+N Command Layer
-static bool j_pressed = false;
-static bool n_pressed = false;
+static bool cmd_j_pressed = false;
+static bool cmd_n_pressed = false;
+static bool cmd_layer5_on = false;
+
+static void update_command_layer(void) {
+    if (cmd_j_pressed && cmd_n_pressed) {
+        if (!cmd_layer5_on) {
+            layer_on(5);
+            cmd_layer5_on = true;
+        }
+    } else {
+        if (cmd_layer5_on) {
+            layer_off(5);
+            cmd_layer5_on = false;
+        }
+    }
+}
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
@@ -135,22 +150,18 @@ static const uint8_t right_key_to_led[4][6] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
-    // J+N = Momentary Layer5
-    switch (keycode) {
+    uint8_t row = record->event.key.row;
+    uint8_t col = record->event.key.col;
 
-        case KC_J:
-            j_pressed = record->event.pressed;
-            break;
-
-        case KC_N:
-            n_pressed = record->event.pressed;
-            break;
+    // 物理位置で判定：右手J位置 = row 5 col 1、右手N位置 = row 6 col 0
+    if (row == 5 && col == 1) {
+        cmd_j_pressed = record->event.pressed;
+        update_command_layer();
     }
 
-    if (j_pressed && n_pressed) {
-        layer_on(5);
-    } else {
-        layer_off(5);
+    if (row == 6 && col == 0) {
+        cmd_n_pressed = record->event.pressed;
+        update_command_layer();
     }
 
     // Keyball LED Event Synchronization
@@ -165,8 +176,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return true;
     }
 
-    uint8_t row = record->event.key.row;
-    uint8_t col = record->event.key.col;
+    //uint8_t row = record->event.key.row;
+    //uint8_t col = record->event.key.col;
 
     if (col >= 6) {
         return true;
