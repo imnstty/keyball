@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.03  2026-06-30
+ * - Changed OLED orientation to vertical.
+ *
  * Ver 1.02  2026-06-30
  * - Added Page1 layout skeleton.
  *
@@ -130,6 +133,14 @@ bool oled_task_custom(void)
     }
 
     return false;
+}
+
+/******************************************************************************
+ * @brief Initialize OLED rotation
+ ******************************************************************************/
+oled_rotation_t oled_init_user(oled_rotation_t rotation)
+{
+    return OLED_ROTATION_270;
 }
 
 #endif
