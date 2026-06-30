@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.09  2026-06-30
+ * - Clear OLED only when page changes.
+ *
  * Ver 1.08  2026-06-30
  * - Added Page2 debug layout skeleton.
  *
@@ -67,6 +70,7 @@ static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
 static uint16_t last_kc = 0;
+static bool oled_page_changed = true;
 
 /******************************************************************************
  * Function Prototypes
@@ -192,6 +196,7 @@ static void render_page2(void)
 void oled_next_page(void)
 {
     oled_page = (oled_page + 1) % 2;
+    oled_page_changed = true;
 }
 
 /******************************************************************************
