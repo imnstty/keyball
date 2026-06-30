@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.11  2026-06-30
+ * - Replaced custom Page2 ball/CPI display with built-in Keyball ball info.
+ *
  * Ver 1.10  2026-06-30
  * - Added real ball movement display on Page2.
  *
@@ -87,7 +90,6 @@ static void render_keyball_status(void);
 static void render_key_info(void);
 static void render_ball_info(void);
 static void render_cpi_info(void);
-static void oled_write_signed_2digit(char label, int8_t value);
 
 /******************************************************************************
  * Local Functions
@@ -164,56 +166,6 @@ static void render_key_info(void)
 }
 
 /******************************************************************************
- * @brief Write signed 2-digit value
- ******************************************************************************/
-static void oled_write_signed_2digit(char label, int8_t value)
-{
-    char buf[5];
-    uint8_t abs_value;
-
-    buf[0] = label;
-
-    if (value < 0) {
-        buf[1] = '-';
-        abs_value = (uint8_t)(-value);
-    } else {
-        buf[1] = '+';
-        abs_value = (uint8_t)value;
-    }
-
-    if (abs_value > 99) {
-        abs_value = 99;
-    }
-
-    buf[2] = '0' + (abs_value / 10);
-    buf[3] = '0' + (abs_value % 10);
-    buf[4] = '\0';
-
-    oled_write_ln(buf, false);
-}
-
-/******************************************************************************
- * @brief Render CPI information
- ******************************************************************************/
-static void render_cpi_info(void)
-{
-    oled_write_ln_P(PSTR("CPI"), false);
-    oled_write_ln_P(PSTR("0500"), false);
-}
-
-/******************************************************************************
- * @brief Render ball movement information
- ******************************************************************************/
-static void render_ball_info(void)
-{
-    oled_write_ln_P(PSTR("Ball"), false);
-    oled_write_signed_2digit('X', keyball.last_mouse.x);
-    oled_write_signed_2digit('Y', keyball.last_mouse.y);
-    oled_write_signed_2digit('H', keyball.last_mouse.h);
-    oled_write_signed_2digit('V', keyball.last_mouse.v);
-}
-
-/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -233,10 +185,7 @@ static void render_page1(void)
  ******************************************************************************/
 static void render_page2(void)
 {
-    render_cpi_info();
-
-    oled_write_ln_P(PSTR(""), false);
-    render_ball_info();
+    keyball_oled_render_ballinfo();
 
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
