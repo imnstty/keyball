@@ -88,8 +88,6 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
-static void render_ball_info(void);
-static void render_cpi_info(void);
 
 /******************************************************************************
  * Local Functions
@@ -214,6 +212,11 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
 
 bool oled_task_custom(void)
 {
+    if (!is_keyboard_master()) {
+        render_slave_logo();
+        return false;
+    }
+
     if (oled_page_changed) {
         oled_clear();
         oled_page_changed = false;
