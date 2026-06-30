@@ -23,6 +23,15 @@ along with this program.  If not, see <http://gnu.org>.
 // Command Layer
 #include "features/command_layer.h"
 
+// OLED Custom
+#include "features/oled.h"
+
+#ifdef OLED_ENABLE
+bool oled_task_user(void) {
+    return oled_task_custom();
+}
+#endif
+
 //void keyball_send_led_event(uint8_t led, bool pressed);
 
 // Keyball LED Event Synchronization

@@ -8,3 +8,6 @@ LTO_ENABLE = yes
 
 # Command Layer
 SRC += features/command_layer.c
+
+# OLED Custom
+SRC += features/oled.c
