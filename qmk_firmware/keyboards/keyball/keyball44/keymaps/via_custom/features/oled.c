@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.12  2026-06-30
+ * - Added slave OLED logo display.
+ *
  * Ver 1.11  2026-06-30
  * - Replaced custom Page2 ball/CPI display with built-in Keyball ball info.
  *
@@ -88,6 +91,7 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
+static void render_slave_logo(void);
 
 /******************************************************************************
  * Local Functions
@@ -187,6 +191,16 @@ static void render_page2(void)
 
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
+}
+
+/******************************************************************************
+ * @brief Render slave side logo
+ ******************************************************************************/
+static void render_slave_logo(void)
+{
+    oled_write_ln_P(PSTR("KEY"), false);
+    oled_write_ln_P(PSTR("BALL"), false);
+    oled_write_ln_P(PSTR("44"), false);
 }
 
 /******************************************************************************
