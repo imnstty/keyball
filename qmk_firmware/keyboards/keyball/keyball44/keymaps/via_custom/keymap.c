@@ -37,7 +37,6 @@ bool oled_task_user(void) {
 // Keyball LED Event Synchronization
 enum custom_keycodes {
     KEM_TOG = KEYBALL_SAFE_RANGE,
-    OLED_NEXT,
 };
 
 // clang-format off
@@ -149,7 +148,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif
 
     switch (keycode) {
-        case OLED_NEXT:
+        case KC_MENU:
             if (record->event.pressed) {
 #ifdef OLED_ENABLE
                 oled_next_page();
