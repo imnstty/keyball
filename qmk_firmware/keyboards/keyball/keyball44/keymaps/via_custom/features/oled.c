@@ -26,6 +26,10 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.04  2026-06-30
+ * - Changed layer label to "Layer".
+ * - Added lock key status display.
+ *
  * Ver 1.03  2026-06-30
  * - Changed OLED orientation to vertical.
  *
@@ -55,6 +59,7 @@ static uint8_t oled_page = 0;
 static void render_page1(void);
 static void render_page2(void);
 static void render_layer(void);
+static void render_lock_status(void);
 
 /******************************************************************************
  * Local Functions
@@ -65,7 +70,7 @@ static void render_layer(void);
  ******************************************************************************/
 static void render_layer(void)
 {
-    oled_write_ln_P(PSTR("Lyr"), false);
+    oled_write_ln_P(PSTR("Layer"), false);
 
     char buf[6];
 
@@ -79,27 +84,31 @@ static void render_layer(void)
 }
 
 /******************************************************************************
+ * @brief Render lock key status
+ ******************************************************************************/
+static void render_lock_status(void)
+{
+    led_t led_state = host_keyboard_led_state();
+
+    oled_write_ln_P(PSTR(""), false);
+    oled_write_ln_P(PSTR("Num"), led_state.num_lock);
+    oled_write_ln_P(PSTR("Scrl"), led_state.scroll_lock);
+    oled_write_ln_P(PSTR("Caps"), led_state.caps_lock);
+}
+
+/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
 {
     render_layer();
+    render_lock_status();
 
-    oled_write_ln_P(PSTR("Num"), false);
     oled_write_ln_P(PSTR(""), false);
-
-    oled_write_ln_P(PSTR("Scrl"), false);
-    oled_write_ln_P(PSTR(""), false);
-
-    oled_write_ln_P(PSTR("Caps"), false);
-    oled_write_ln_P(PSTR(""), false);
-
     oled_write_ln_P(PSTR("ALM"), false);
-    oled_write_ln_P(PSTR(""), false);
-
     oled_write_ln_P(PSTR("KEM"), false);
-    oled_write_ln_P(PSTR(""), false);
 
+    oled_write_ln_P(PSTR(""), false);
     oled_write_ln_P(PSTR("R0C0"), false);
     oled_write_ln_P(PSTR("K00"), false);
 }
