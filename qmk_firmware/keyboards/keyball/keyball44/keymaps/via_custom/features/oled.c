@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.06  2026-06-30
+ * - Added custom key position and keycode display.
+ *
  * Ver 1.05  2026-06-30
  * - Added built-in key information display.
  *
@@ -55,6 +58,9 @@
  * Variables
  ******************************************************************************/
 static uint8_t oled_page = 0;
+static uint8_t last_row = 0;
+static uint8_t last_col = 0;
+static uint16_t last_kc = 0;
 
 /******************************************************************************
  * Function Prototypes
@@ -63,6 +69,7 @@ static void render_page1(void);
 static void render_page2(void);
 static void render_layer(void);
 static void render_lock_status(void);
+static void render_key_info(void);
 
 /******************************************************************************
  * Local Functions
@@ -100,6 +107,31 @@ static void render_lock_status(void)
 }
 
 /******************************************************************************
+ * @brief Render last key position and keycode
+ ******************************************************************************/
+static void render_key_info(void)
+{
+    static const char hex[] = "0123456789ABCDEF";
+
+    char pos[5];
+    pos[0] = 'R';
+    pos[1] = '0' + last_row;
+    pos[2] = 'C';
+    pos[3] = '0' + last_col;
+    pos[4] = '\0';
+
+    oled_write_ln(pos, false);
+
+    char kc[4];
+    kc[0] = 'K';
+    kc[1] = hex[(last_kc >> 4) & 0x0F];
+    kc[2] = hex[last_kc & 0x0F];
+    kc[3] = '\0';
+
+    oled_write_ln(kc, false);
+}
+
+/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -112,8 +144,7 @@ static void render_page1(void)
     oled_write_ln_P(PSTR("KEM"), false);
 
     oled_write_ln_P(PSTR(""), false);
-    oled_write_ln_P(PSTR("R0C0"), false);
-    oled_write_ln_P(PSTR("K00"), false);
+    render_key_info();
 }
 
 /******************************************************************************
@@ -132,6 +163,18 @@ static void render_page2(void)
 void oled_next_page(void)
 {
     oled_page = (oled_page + 1) % 2;
+}
+
+/******************************************************************************
+ * @brief Record last pressed key information
+ ******************************************************************************/
+void oled_record_key(uint16_t keycode, keyrecord_t *record)
+{
+    if (record->event.pressed) {
+        last_row = record->event.key.row;
+        last_col = record->event.key.col;
+        last_kc = keycode & 0xFF;
+    }
 }
 
 bool oled_task_custom(void)

@@ -143,6 +143,10 @@ static const uint8_t right_key_to_led[4][6] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
+#ifdef OLED_ENABLE
+    oled_record_key(keycode, record);
+#endif
+
     if (!command_process(keycode, record)) {
     return false;
     }

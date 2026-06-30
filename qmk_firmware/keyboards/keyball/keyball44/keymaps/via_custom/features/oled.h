@@ -25,3 +25,5 @@
 bool oled_task_custom(void);
 void oled_next_page(void);
 #endif
+
+void oled_record_key(uint16_t keycode, keyrecord_t *record);
