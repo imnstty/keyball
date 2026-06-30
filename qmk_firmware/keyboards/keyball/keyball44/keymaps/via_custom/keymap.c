@@ -162,17 +162,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return false;
     }
 
-    // OLED Page
-    switch (keycode) {
-        case OLED_IN:
-            if (record->event.pressed) {
-    #ifdef OLED_ENABLE
-                oled_next_page();
-    #endif
-            }
-            return false;
-    }
-
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
 
