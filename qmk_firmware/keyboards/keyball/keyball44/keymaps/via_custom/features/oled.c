@@ -198,7 +198,7 @@ static void oled_write_signed_2digit(char label, int8_t value)
 static void render_cpi_info(void)
 {
     oled_write_ln_P(PSTR("CPI"), false);
-    keyball_oled_render_cpi_status();
+    oled_write_ln_P(PSTR("0500"), false);
 }
 
 /******************************************************************************
