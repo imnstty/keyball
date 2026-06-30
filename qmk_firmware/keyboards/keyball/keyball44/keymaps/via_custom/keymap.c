@@ -40,6 +40,7 @@ bool oled_task_user(void) {
 // Keyball LED Event Synchronization
 enum custom_keycodes {
     KEM_TOG = KEYBALL_SAFE_RANGE,
+    OLED_NEXT,
 };
 
 // clang-format off
@@ -159,7 +160,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
     }
-    
+
     if (!command_process(keycode, record)) {
     return false;
     }
