@@ -44,10 +44,35 @@
 static uint8_t oled_page = 0;
 
 /******************************************************************************
+ * Function Prototypes
+ ******************************************************************************/
+static void render_page1(void);
+static void render_page2(void);
+static void render_layer(void);
+
+/******************************************************************************
  * Local Functions
  ******************************************************************************/
 
- /******************************************************************************
+/******************************************************************************
+ * @brief Render active layer status
+ ******************************************************************************/
+static void render_layer(void)
+{
+    oled_write_ln_P(PSTR("Lyr"), false);
+
+    char buf[6];
+
+    for (uint8_t i = 1; i <= 5; i++) {
+        buf[i - 1] = layer_state_is(i) ? ('0' + i) : '-';
+    }
+
+    buf[5] = '\0';
+
+    oled_write_ln(buf, false);
+}
+
+/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -56,6 +81,9 @@ static void render_page1(void)
     render_layer();
 }
 
+/******************************************************************************
+ * @brief Render Page 2 (Debug Page)
+ ******************************************************************************/
 static void render_page2(void)
 {
     oled_write_ln_P(PSTR("Page2"), false);
@@ -85,21 +113,3 @@ bool oled_task_custom(void)
 }
 
 #endif
-
-/******************************************************************************
- * @brief Render active layer status
- ******************************************************************************/
-static void render_layer(void)
-{
-    oled_write_ln_P(PSTR("Lyr"), false);
-
-    char buf[6];
-
-    for (uint8_t i = 1; i <= 5; i++) {
-        buf[i - 1] = layer_state_is(i) ? ('0' + i) : '-';
-    }
-
-    buf[5] = '\0';
-
-    oled_write_ln(buf, false);
-}
