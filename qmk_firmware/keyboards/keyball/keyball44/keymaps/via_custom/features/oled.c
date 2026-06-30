@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.01  2026-06-30
+ * - Added active layer status display.
+ *
  * Ver 1.00  2026-06-30
  * - Initial release.
  *
@@ -43,11 +46,14 @@ static uint8_t oled_page = 0;
 /******************************************************************************
  * Local Functions
  ******************************************************************************/
+
+ /******************************************************************************
+ * @brief Render Page 1 (Status Page)
+ ******************************************************************************/
 static void render_page1(void)
 {
     oled_write_ln_P(PSTR("Page1"), false);
-    oled_write_ln_P(PSTR("Lyr"), false);
-    oled_write_ln_P(PSTR("-----"), false);
+    render_layer();
 }
 
 static void render_page2(void)
@@ -79,3 +85,21 @@ bool oled_task_custom(void)
 }
 
 #endif
+
+/******************************************************************************
+ * @brief Render active layer status
+ ******************************************************************************/
+static void render_layer(void)
+{
+    oled_write_ln_P(PSTR("Lyr"), false);
+
+    char buf[6];
+
+    for (uint8_t i = 1; i <= 5; i++) {
+        buf[i - 1] = layer_state_is(i) ? ('0' + i) : '-';
+    }
+
+    buf[5] = '\0';
+
+    oled_write_ln(buf, false);
+}
