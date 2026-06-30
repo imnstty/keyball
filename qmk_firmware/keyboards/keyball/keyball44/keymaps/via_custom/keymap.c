@@ -26,9 +26,6 @@ along with this program.  If not, see <http://gnu.org>.
 // OLED Custom
 #include "features/oled.h"
 
-// Custom keycode
-#include "features/custom_keycodes.h"
-
 #ifdef OLED_ENABLE
 bool oled_task_user(void) {
     return oled_task_custom();
