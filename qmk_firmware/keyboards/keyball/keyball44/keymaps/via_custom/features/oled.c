@@ -91,7 +91,6 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
-static void render_slave_logo(void);
 
 /******************************************************************************
  * Local Functions
@@ -194,16 +193,6 @@ static void render_page2(void)
 }
 
 /******************************************************************************
- * @brief Render slave side logo
- ******************************************************************************/
-static void render_slave_logo(void)
-{
-    oled_write_ln_P(PSTR("KEY"), false);
-    oled_write_ln_P(PSTR("BALL"), false);
-    oled_write_ln_P(PSTR("44"), false);
-}
-
-/******************************************************************************
  * Public Functions
  ******************************************************************************/
 void oled_next_page(void)
@@ -227,8 +216,7 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
 bool oled_task_custom(void)
 {
     if (!is_keyboard_master()) {
-        render_slave_logo();
-        return false;
+        return true;
     }
 
     if (oled_page_changed) {
