@@ -48,7 +48,7 @@
  ******************************************************************************/
 
 #include "oled.h"
-#include "keyball.h"
+#include "lib/keyball/keyball.h"
 
 #ifdef OLED_ENABLE
 
