@@ -213,6 +213,11 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
 
 bool oled_task_custom(void)
 {
+    if (oled_page_changed) {
+        oled_clear();
+        oled_page_changed = false;
+    }
+
     oled_set_cursor(0, 0);
 
     if (oled_page == 0) {
