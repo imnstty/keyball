@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.08  2026-06-30
+ * - Added Page2 debug layout skeleton.
+ *
  * Ver 1.07  2026-06-30
  * - Added ALM status display.
  *
@@ -159,7 +162,7 @@ static void render_page1(void)
 
     oled_write_ln_P(PSTR(""), false);
     render_keyball_status();
-    
+
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
 }
@@ -169,9 +172,18 @@ static void render_page1(void)
  ******************************************************************************/
 static void render_page2(void)
 {
-    oled_write_ln_P(PSTR("Page2"), false);
     oled_write_ln_P(PSTR("CPI"), false);
     oled_write_ln_P(PSTR("0500"), false);
+
+    oled_write_ln_P(PSTR(""), false);
+    oled_write_ln_P(PSTR("Ball"), false);
+    oled_write_ln_P(PSTR("X +0"), false);
+    oled_write_ln_P(PSTR("Y +0"), false);
+    oled_write_ln_P(PSTR("H +0"), false);
+    oled_write_ln_P(PSTR("V +0"), false);
+
+    oled_write_ln_P(PSTR(""), false);
+    render_key_info();
 }
 
 /******************************************************************************

@@ -26,6 +26,9 @@ along with this program.  If not, see <http://gnu.org>.
 // OLED Custom
 #include "features/oled.h"
 
+// Custom keycode
+#include "features/custom_keycodes.h"
+
 #ifdef OLED_ENABLE
 bool oled_task_user(void) {
     return oled_task_custom();
@@ -147,8 +150,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     oled_record_key(keycode, record);
 #endif
 
+    switch (keycode) {
+        case OLED_NEXT:
+            if (record->event.pressed) {
+#ifdef OLED_ENABLE
+                oled_next_page();
+#endif
+            }
+            return false;
+    }
+    
     if (!command_process(keycode, record)) {
     return false;
+    }
+
+    // OLED Page
+    switch (keycode) {
+        case OLED_IN:
+            if (record->event.pressed) {
+    #ifdef OLED_ENABLE
+                oled_next_page();
+    #endif
+            }
+            return false;
     }
 
     uint8_t row = record->event.key.row;
