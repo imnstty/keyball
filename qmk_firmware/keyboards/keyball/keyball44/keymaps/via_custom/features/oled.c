@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.02  2026-06-30
+ * - Added Page1 layout skeleton.
+ *
  * Ver 1.01  2026-06-30
  * - Added active layer status display.
  *
@@ -77,8 +80,25 @@ static void render_layer(void)
  ******************************************************************************/
 static void render_page1(void)
 {
-    oled_write_ln_P(PSTR("Page1"), false);
     render_layer();
+
+    oled_write_ln_P(PSTR("Num"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("Scrl"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("Caps"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("ALM"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("KEM"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("R0C0"), false);
+    oled_write_ln_P(PSTR("K00"), false);
 }
 
 /******************************************************************************
