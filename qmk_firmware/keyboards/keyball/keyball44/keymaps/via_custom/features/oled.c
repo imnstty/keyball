@@ -27,7 +27,7 @@
  * Revision History
  *-----------------------------------------------------------------------------
  * Ver 1.05  2026-06-30
- * - Added key position and keycode display.
+ * - Added built-in key information display.
  *
  * Ver 1.04  2026-06-30
  * - Changed layer label to "Layer".
@@ -64,7 +64,6 @@ static void render_page1(void);
 static void render_page2(void);
 static void render_layer(void);
 static void render_lock_status(void);
-static void render_key_info(void);
 
 /******************************************************************************
  * Local Functions
@@ -102,20 +101,6 @@ static void render_lock_status(void)
 }
 
 /******************************************************************************
- * @brief Render last key position and keycode
- ******************************************************************************/
-static void render_key_info(void)
-{
-    char buf[6];
-
-    snprintf(buf, sizeof(buf), "R%dC%d", keyball.last_pos.row, keyball.last_pos.col);
-    oled_write_ln(buf, false);
-
-    snprintf(buf, sizeof(buf), "K%02X", keyball.last_kc & 0xFF);
-    oled_write_ln(buf, false);
-}
-
-/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -128,8 +113,7 @@ static void render_page1(void)
     oled_write_ln_P(PSTR("KEM"), false);
 
     oled_write_ln_P(PSTR(""), false);
-    
-    render_key_info();
+    keyball_oled_render_keyinfo();
 }
 
 /******************************************************************************
