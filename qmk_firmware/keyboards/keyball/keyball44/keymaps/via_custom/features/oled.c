@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.07  2026-06-30
+ * - Added ALM status display.
+ *
  * Ver 1.06  2026-06-30
  * - Added custom key position and keycode display.
  *
@@ -69,6 +72,7 @@ static void render_page1(void);
 static void render_page2(void);
 static void render_layer(void);
 static void render_lock_status(void);
+static void render_keyball_status(void);
 static void render_key_info(void);
 
 /******************************************************************************
@@ -107,6 +111,20 @@ static void render_lock_status(void)
 }
 
 /******************************************************************************
+ * @brief Render Keyball feature status
+ ******************************************************************************/
+static void render_keyball_status(void)
+{
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+    oled_write_ln_P(PSTR("ALM"), get_auto_mouse_enable());
+#else
+    oled_write_ln_P(PSTR("ALM"), false);
+#endif
+
+    oled_write_ln_P(PSTR("KEM"), false);
+}
+
+/******************************************************************************
  * @brief Render last key position and keycode
  ******************************************************************************/
 static void render_key_info(void)
@@ -140,9 +158,8 @@ static void render_page1(void)
     render_lock_status();
 
     oled_write_ln_P(PSTR(""), false);
-    oled_write_ln_P(PSTR("ALM"), false);
-    oled_write_ln_P(PSTR("KEM"), false);
-
+    render_keyball_status();
+    
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
 }
