@@ -30,62 +30,49 @@
  * - Initial release.
  *
  ******************************************************************************/
- /*
- * -----------------------------------------------------------------------------
- * File      : oled.c
- * Project   : Keyball44 Custom Firmware
- * Author    : Tetsuya Imanishi
- * Version   : 1.00
- * Date      : 2026-06-30
- *
- * Description
- *   OLED display control module.
- *   Handles page management and OLED rendering.
- *
- * Page Configuration
- *   Page1 : Status
- *   Page2 : Debug
- *   Page3 : Reserved
- *
- * History
- * -----------------------------------------------------------------------------
- * Ver 1.00  2026-06-30
- *   - Initial version.
- * -----------------------------------------------------------------------------
- */
- 
+
 #include "oled.h"
 
 #ifdef OLED_ENABLE
 
+/******************************************************************************
+ * Variables
+ ******************************************************************************/
 static uint8_t oled_page = 0;
 
-void oled_next_page(void) {
+/******************************************************************************
+ * Local Functions
+ ******************************************************************************/
+static void render_page1(void)
+{
+    oled_write_ln_P(PSTR("Page1"), false);
+    oled_write_ln_P(PSTR("Lyr"), false);
+    oled_write_ln_P(PSTR("-----"), false);
+}
+
+static void render_page2(void)
+{
+    oled_write_ln_P(PSTR("Page2"), false);
+    oled_write_ln_P(PSTR("CPI"), false);
+    oled_write_ln_P(PSTR("0500"), false);
+}
+
+/******************************************************************************
+ * Public Functions
+ ******************************************************************************/
+void oled_next_page(void)
+{
     oled_page = (oled_page + 1) % 2;
 }
 
-bool oled_task_custom(void) {
+bool oled_task_custom(void)
+{
     oled_clear();
 
     if (oled_page == 0) {
-        oled_write_ln_P(PSTR("Lyr"), false);
-        oled_write_ln_P(PSTR("-----"), false);
-        oled_write_ln_P(PSTR(""), false);
-        oled_write_ln_P(PSTR("Num"), false);
-        oled_write_ln_P(PSTR("Scrl"), false);
-        oled_write_ln_P(PSTR("Caps"), false);
-        oled_write_ln_P(PSTR(""), false);
-        oled_write_ln_P(PSTR("ALM"), false);
-        oled_write_ln_P(PSTR("KEM"), false);
+        render_page1();
     } else {
-        oled_write_ln_P(PSTR("CPI"), false);
-        oled_write_ln_P(PSTR("0500"), false);
-        oled_write_ln_P(PSTR(""), false);
-        oled_write_ln_P(PSTR("Ball"), false);
-        oled_write_ln_P(PSTR("X +0"), false);
-        oled_write_ln_P(PSTR("Y +0"), false);
-        oled_write_ln_P(PSTR("H +0"), false);
-        oled_write_ln_P(PSTR("V +0"), false);
+        render_page2();
     }
 
     return false;

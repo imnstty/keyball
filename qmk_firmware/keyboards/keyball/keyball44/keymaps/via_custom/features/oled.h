@@ -16,18 +16,7 @@
  * - Initial release.
  *
  ******************************************************************************/
- /*
- * -----------------------------------------------------------------------------
- * File      : oled.h
- * Project   : Keyball44 Custom Firmware
- * Author    : Tetsuya Imanishi
- * Version   : 1.00
- * Date      : 2026-06-30
- *
- * Description
- *   OLED display module header.
- * -----------------------------------------------------------------------------
- */
+
 #pragma once
 
 #include QMK_KEYBOARD_H
