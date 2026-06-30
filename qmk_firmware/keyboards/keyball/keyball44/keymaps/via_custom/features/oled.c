@@ -48,7 +48,6 @@
  ******************************************************************************/
 
 #include "oled.h"
-#include "lib/keyball/keyball.h"
 
 #ifdef OLED_ENABLE
 
@@ -113,7 +112,8 @@ static void render_page1(void)
     oled_write_ln_P(PSTR("KEM"), false);
 
     oled_write_ln_P(PSTR(""), false);
-    keyball_oled_render_keyinfo();
+    oled_write_ln_P(PSTR("R0C0"), false);
+    oled_write_ln_P(PSTR("K00"), false);
 }
 
 /******************************************************************************
@@ -136,7 +136,7 @@ void oled_next_page(void)
 
 bool oled_task_custom(void)
 {
-    oled_clear();
+    oled_set_cursor(0, 0);
 
     if (oled_page == 0) {
         render_page1();
