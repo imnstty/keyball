@@ -16,12 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://gnu.org>.
 */
 
+/******************************************************************************
+ * @file      keymap.c
+ * @project   Keyball44 Custom Firmware
+ * @brief     Keymap and custom key processing
+ *
+ * @version   1.15
+ * @date      2026-07-01
+ *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
  * Ver 1.15  2026-07-01
- * - Moved key information to Page1 only.
- * - Added firmware version display to Page2.
+ * - Added KEM toggle and OLED status display.
  *
  ******************************************************************************/
 
