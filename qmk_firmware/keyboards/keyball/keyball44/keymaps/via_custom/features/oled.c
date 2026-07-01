@@ -26,6 +26,10 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.13  2026-07-01
+ * - Restored original Keyball logo on slave side.
+ * - Fixed Page2 layout for vertical OLED display.
+ *
  * Ver 1.12  2026-06-30
  * - Added slave OLED logo display.
  *
@@ -70,6 +74,7 @@
 
 #include "oled.h"
 #include "lib/keyball/keyball.h"
+#include "lib/oledkit/oledkit.h"
 
 #ifdef OLED_ENABLE
 
@@ -91,6 +96,9 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
+static void render_cpi_info(void);
+static void render_ball_info(void);
+static void oled_write_signed_2digit(char label, int8_t value);
 
 /******************************************************************************
  * Local Functions
@@ -167,6 +175,69 @@ static void render_key_info(void)
 }
 
 /******************************************************************************
+ * @brief Render CPI information
+ ******************************************************************************/
+static void render_cpi_info(void)
+{
+    uint16_t cpi = (uint16_t)keyball_get_cpi() * 100;
+
+    if (cpi > 9999) {
+        cpi = 9999;
+    }
+
+    char buf[5];
+    buf[0] = '0' + (cpi / 1000) % 10;
+    buf[1] = '0' + (cpi / 100) % 10;
+    buf[2] = '0' + (cpi / 10) % 10;
+    buf[3] = '0' + cpi % 10;
+    buf[4] = '\0';
+
+    oled_write_ln_P(PSTR("CPI"), false);
+    oled_write_ln(buf, false);
+}
+
+/******************************************************************************
+ * @brief Write signed 2-digit value
+ ******************************************************************************/
+static void oled_write_signed_2digit(char label, int8_t value)
+{
+    char buf[5];
+    uint8_t abs_value;
+
+    buf[0] = label;
+
+    if (value < 0) {
+        buf[1] = '-';
+        abs_value = (uint8_t)(-value);
+    } else {
+        buf[1] = '+';
+        abs_value = (uint8_t)value;
+    }
+
+    if (abs_value > 99) {
+        abs_value = 99;
+    }
+
+    buf[2] = '0' + (abs_value / 10);
+    buf[3] = '0' + (abs_value % 10);
+    buf[4] = '\0';
+
+    oled_write_ln(buf, false);
+}
+
+/******************************************************************************
+ * @brief Render ball movement information
+ ******************************************************************************/
+static void render_ball_info(void)
+{
+    oled_write_ln_P(PSTR("Ball"), false);
+    oled_write_signed_2digit('X', keyball.last_mouse.x);
+    oled_write_signed_2digit('Y', keyball.last_mouse.y);
+    oled_write_signed_2digit('H', keyball.last_mouse.h);
+    oled_write_signed_2digit('V', keyball.last_mouse.v);
+}
+
+/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -186,7 +257,10 @@ static void render_page1(void)
  ******************************************************************************/
 static void render_page2(void)
 {
-    keyball_oled_render_ballinfo();
+    render_cpi_info();
+
+    oled_write_ln_P(PSTR(""), false);
+    render_ball_info();
 
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
@@ -216,6 +290,12 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
 bool oled_task_custom(void)
 {
     if (!is_keyboard_master()) {
+        oled_set_cursor(0, 0);
+        oledkit_render_logo_user();
+        return false;
+    }
+    
+    if (!is_keyboard_master()) {
         return true;
     }
 
@@ -240,7 +320,9 @@ bool oled_task_custom(void)
  ******************************************************************************/
 oled_rotation_t oled_init_user(oled_rotation_t rotation)
 {
-    return OLED_ROTATION_270;
-}
+    if (is_keyboard_master()) {
+        return OLED_ROTATION_270;
+    }
 
-#endif
+    return OLED_ROTATION_180;
+}
