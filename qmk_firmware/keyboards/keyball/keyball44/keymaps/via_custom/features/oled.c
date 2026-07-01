@@ -88,7 +88,6 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_name[]    = "Keyball44";
 static const char firmware_version[] = "FW1.15";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
