@@ -284,6 +284,8 @@ static void render_page2(void)
 
     render_key_info();
 
+    oled_write_ln_P(PSTR(""), false);
+
     render_version();
 }
 
