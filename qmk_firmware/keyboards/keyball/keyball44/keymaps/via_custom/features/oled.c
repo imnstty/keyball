@@ -26,6 +26,10 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.15  2026-07-01
+ * - Added firmware version display on Page2.
+ * - Firmware version string moved to shared variable.
+ *
  * Ver 1.14  2026-07-01
  * - Added KEM status display using Keyball KEM API.
  *
@@ -84,6 +88,8 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
+static const char firmware_name[]    = "Keyball44";
+static const char firmware_version[] = "FW1.15";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
@@ -99,6 +105,7 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
+static void render_version(void);
 static void render_cpi_info(void);
 static void render_ball_info(void);
 static void oled_write_signed_2digit(char label, int8_t value);
@@ -241,6 +248,14 @@ static void render_ball_info(void)
 }
 
 /******************************************************************************
+ * @brief Render firmware version
+ ******************************************************************************/
+static void render_version(void)
+{
+    oled_write_ln(firmware_version, false);
+}
+
+/******************************************************************************
  * @brief Render Page 1 (Status Page)
  ******************************************************************************/
 static void render_page1(void)
@@ -263,10 +278,14 @@ static void render_page2(void)
     render_cpi_info();
 
     oled_write_ln_P(PSTR(""), false);
+
     render_ball_info();
 
     oled_write_ln_P(PSTR(""), false);
+
     render_key_info();
+
+    render_version();
 }
 
 /******************************************************************************

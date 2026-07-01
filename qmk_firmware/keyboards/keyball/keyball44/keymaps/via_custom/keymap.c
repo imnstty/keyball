@@ -16,6 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://gnu.org>.
 */
 
+ *-----------------------------------------------------------------------------
+ * Revision History
+ *-----------------------------------------------------------------------------
+ * Ver 1.15  2026-07-01
+ * - Moved key information to Page1 only.
+ * - Added firmware version display to Page2.
+ *
+ ******************************************************************************/
+
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
@@ -162,9 +171,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
     }
-    
+
     if (!command_process(keycode, record)) {
     return false;
+    }
+
+    if (!keyball_get_kem_enabled()) {
+        return true;
     }
 
     uint8_t row = record->event.key.row;
