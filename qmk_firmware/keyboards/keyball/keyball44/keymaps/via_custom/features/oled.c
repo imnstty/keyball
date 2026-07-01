@@ -26,6 +26,9 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 1.14  2026-07-01
+ * - Added KEM status display using Keyball KEM API.
+ *
  * Ver 1.13  2026-07-01
  * - Restored original Keyball logo on slave side.
  * - Fixed Page2 layout for vertical OLED display.
@@ -146,7 +149,7 @@ static void render_keyball_status(void)
     oled_write_ln_P(PSTR("ALM"), false);
 #endif
 
-    oled_write_ln_P(PSTR("KEM"), false);
+    oled_write_ln_P(PSTR("KEM"), keyball_get_kem_enabled());
 }
 
 /******************************************************************************

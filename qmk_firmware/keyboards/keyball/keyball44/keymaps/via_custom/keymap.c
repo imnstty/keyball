@@ -155,8 +155,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif
             }
             return false;
-    }
 
+        case KC_SELECT:
+            if (record->event.pressed) {
+                keyball_toggle_kem();
+            }
+            return false;
+    }
+    
     if (!command_process(keycode, record)) {
     return false;
     }
