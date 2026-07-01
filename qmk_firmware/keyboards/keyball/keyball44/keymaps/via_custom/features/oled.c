@@ -294,10 +294,6 @@ bool oled_task_custom(void)
         oledkit_render_logo_user();
         return false;
     }
-    
-    if (!is_keyboard_master()) {
-        return true;
-    }
 
     if (oled_page_changed) {
         oled_clear();
@@ -326,3 +322,5 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation)
 
     return OLED_ROTATION_180;
 }
+
+#endif
