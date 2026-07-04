@@ -36,13 +36,12 @@ the Free Software Foundation, either version 2 of the License, or
  *
  ******************************************************************************/
 #include "kem.h"
+#include "kem_layer.h"
 
 bool kem_process_record(uint16_t keycode, keyrecord_t *record) {
-    (void)keycode;
-    (void)record;
-
-    // KEM Core entry point.
-    // Future KEM features will be handled here.
+    if (!kem_layer_process_record(keycode, record)) {
+        return false;
+    }
 
     return true;
 }

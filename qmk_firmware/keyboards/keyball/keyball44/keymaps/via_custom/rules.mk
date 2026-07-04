@@ -14,3 +14,6 @@ SRC += features/oled.c
 
 # KEM Core
 SRC += features/kem.c
+
+# KEM Layer
+SRC += features/kem_layer.c

@@ -3,8 +3,8 @@
  * @project   Keyball44 Custom Firmware
  * @brief     OLED Display Control Module
  *
- * @version   1.00
- * @date      2026-06-30
+ * @version   2.00
+ * @date      2026-07-04
  *
  * @details
  * This module manages the OLED display for the Keyball44 custom firmware.
@@ -26,6 +26,10 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.00  2026-07-04
+ * - Added Tap/Hold Layer5 key.
+ * - Updated firmware version display.
+ *
  * Ver 1.15  2026-07-01
  * - Added firmware version display on Page2.
  * - Firmware version string moved to shared variable.
@@ -88,7 +92,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v1.15";
+static const char firmware_version[] = "v2.00";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;

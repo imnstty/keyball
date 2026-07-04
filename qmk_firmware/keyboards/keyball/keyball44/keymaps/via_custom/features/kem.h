@@ -28,8 +28,13 @@ the Free Software Foundation, either version 2 of the License, or
  *
  ******************************************************************************/
 
-#pragma once
+#include "kem.h"
+#include "kem_layer.h"
 
-#include QMK_KEYBOARD_H
+bool kem_process_record(uint16_t keycode, keyrecord_t *record) {
+    if (!kem_layer_process_record(keycode, record)) {
+        return false;
+    }
 
-bool kem_process_record(uint16_t keycode, keyrecord_t *record);
+    return true;
+}
