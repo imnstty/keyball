@@ -1,10 +1,5 @@
 /*
 Copyright 2026 Tetsuya Imanishi
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-(at your option) any later version.
 */
 
 /******************************************************************************
@@ -16,25 +11,14 @@ the Free Software Foundation, either version 2 of the License, or
  * @date      2026-07-04
  *
  *-----------------------------------------------------------------------------
- * Description
- *-----------------------------------------------------------------------------
- * Entry point for all KEM features.
- *
- * Future responsibilities:
- *   - Tap/Hold Layer Engine
- *   - LED Control
- *   - OLED Status
- *   - Command Framework
- *
- ******************************************************************************/
- 
-/******************************************************************************
  * Revision History
  *-----------------------------------------------------------------------------
  * Ver 2.00  2026-07-04
+ * - Added Layer Engine processing.
  * - Initial KEM Core.
  *
  ******************************************************************************/
+
 #include "kem.h"
 #include "kem_layer.h"
 
