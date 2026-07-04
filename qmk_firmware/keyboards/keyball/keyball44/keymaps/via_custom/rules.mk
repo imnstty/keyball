@@ -11,3 +11,6 @@ SRC += features/command_layer.c
 
 # OLED Custom
 SRC += features/oled.c
+
+# KEM Core
+SRC += features/kem.c

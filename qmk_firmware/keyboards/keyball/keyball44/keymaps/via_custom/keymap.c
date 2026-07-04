@@ -39,6 +39,9 @@ along with this program.  If not, see <http://gnu.org>.
 // Command Layer
 #include "features/command_layer.h"
 
+// KEM Core
+#include "features/kem.h"
+
 // OLED Custom
 #include "features/oled.h"
 
@@ -180,9 +183,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 
     if (!command_process(keycode, record)) {
-    return false;
+        return false;
     }
 
+    if (!kem_process_record(keycode, record)) {
+        return false;
+    }
+    
     if (!keyball_get_kem_enabled()) {
         return true;
     }
