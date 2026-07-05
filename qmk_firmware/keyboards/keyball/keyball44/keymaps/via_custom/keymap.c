@@ -189,12 +189,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
-    if (!kem_process_record(keycode, record)) {
-        return false;
-    }
-    
+    bool kem_continue = kem_process_record(keycode, record);
+
     if (!keyball_get_kem_enabled()) {
-        return true;
+        return kem_continue;
     }
 
     uint8_t row = record->event.key.row;
@@ -244,7 +242,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    return true;
+    return kem_continue;
 }
 
 void matrix_scan_user(void) {
