@@ -280,5 +280,4 @@ bool keyball_get_kem_enabled(void);
 void keyball_set_kem_enabled(bool enable);
 void keyball_toggle_kem(void);
 void keyball_send_led_event(uint8_t led, bool pressed);
-void keyball_send_led_event_rgb(uint8_t led, uint8_t r, uint8_t g, uint8_t b);
 void keyball_oled_render_keminfo(void);

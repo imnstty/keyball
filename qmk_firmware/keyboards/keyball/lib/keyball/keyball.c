@@ -646,20 +646,6 @@ void keyball_send_led_event(uint8_t led, bool pressed) {
 #endif
 }
 
-void keyball_send_led_event_rgb(uint8_t led, uint8_t r, uint8_t g, uint8_t b) {
-#ifdef SPLIT_KEYBOARD
-    if (!keyball_kem_enabled) {
-        return;
-    }
-
-    led_event.led = led;
-    led_event.r = r;
-    led_event.g = g;
-    led_event.b = b;
-    led_event_pending = true;
-#endif
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Keyboard hooks
 
