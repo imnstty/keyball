@@ -37,6 +37,7 @@ Copyright 2026 Tetsuya Imanishi
 static uint8_t kem_l5_led = KEM_NO_LED;
 static bool    kem_l5_led_on = false;
 static bool    kem_l5_hold_color = false;
+static bool    kem_l5_is_left_side = true;
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},
@@ -61,9 +62,11 @@ static uint8_t kem_led_get_led_index(keyrecord_t *record) {
     }
 
     if (row < 4) {
+        kem_l5_is_left_side = true;
         return left_key_to_led[row][col];
     }
 
+    kem_l5_is_left_side = false;
     return right_key_to_led[row - 4][col];
 }
 
@@ -72,10 +75,18 @@ static void kem_led_set_l5_rgb(uint8_t r, uint8_t g, uint8_t b) {
         return;
     }
 
-    if (is_keyboard_left()) {
-        rgblight_setrgb_at(r, g, b, kem_l5_led);
+    if (kem_l5_is_left_side) {
+        if (is_keyboard_left()) {
+            rgblight_setrgb_at(r, g, b, kem_l5_led);
+        } else {
+            keyball_send_led_event_rgb(kem_l5_led, r, g, b);
+        }
     } else {
-        rgblight_setrgb_at(r, g, b, kem_l5_led + 30);
+        if (!is_keyboard_left()) {
+            rgblight_setrgb_at(r, g, b, kem_l5_led);
+        } else {
+            keyball_send_led_event_rgb(kem_l5_led, r, g, b);
+        }
     }
 }
 
