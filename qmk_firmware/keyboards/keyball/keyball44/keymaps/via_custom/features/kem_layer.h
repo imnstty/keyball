@@ -23,3 +23,7 @@ Copyright 2026 Tetsuya Imanishi
 #include QMK_KEYBOARD_H
 
 bool kem_layer_process_record(uint16_t keycode, keyrecord_t *record);
+
+bool kem_layer_is_l5_active(void);
+bool kem_layer_is_l5_hold_candidate(void);
+bool kem_layer_is_l5_hold_confirmed(void);

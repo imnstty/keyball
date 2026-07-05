@@ -56,3 +56,19 @@ bool kem_layer_process_record(uint16_t keycode, keyrecord_t *record) {
 
     return true;
 }
+
+bool kem_layer_is_l5_active(void) {
+    return kem_l5_active;
+}
+
+bool kem_layer_is_l5_hold_candidate(void) {
+    return kem_l5_active && !kem_l5_interrupted;
+}
+
+bool kem_layer_is_l5_hold_confirmed(void) {
+    if (!kem_l5_active) {
+        return false;
+    }
+
+    return kem_l5_interrupted || timer_elapsed(kem_l5_timer) >= TAPPING_TERM;
+}
