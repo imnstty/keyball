@@ -79,13 +79,13 @@ static void kem_led_set_l5_rgb(uint8_t r, uint8_t g, uint8_t b) {
         if (is_keyboard_left()) {
             rgblight_setrgb_at(r, g, b, kem_l5_led);
         } else {
-            keyball_send_led_event_rgb(kem_l5_led, r, g, b);
+            keyball_send_led_event(kem_l5_led, true);
         }
     } else {
         if (!is_keyboard_left()) {
-            rgblight_setrgb_at(r, g, b, kem_l5_led);
+            rgblight_setrgb_at(r, g, b, kem_l5_led + 30);
         } else {
-            keyball_send_led_event_rgb(kem_l5_led, r, g, b);
+            keyball_send_led_event(kem_l5_led, true);
         }
     }
 }
