@@ -60,9 +60,7 @@ keyball_t keyball = {
 
 typedef struct {
     uint8_t led;
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
+    bool pressed;
 } keyball_led_event_t;
 
 static bool keyball_kem_enabled = KEYBALL_KEM_DEFAULT;
@@ -399,7 +397,10 @@ static void rpc_led_sync_handler(uint8_t in_buflen, const void *in_data,
     }
 
     if (ev->led < RGBLED_NUM) {
-        rgblight_setrgb_at(ev->r, ev->g, ev->b, ev->led);
+        rgblight_setrgb_at(ev->pressed ? 255 : 0,
+                   ev->pressed ? 255 : 0,
+                   ev->pressed ? 255 : 0,
+                   ev->led);
     }
 #endif
 }
@@ -640,9 +641,7 @@ void keyball_send_led_event(uint8_t led, bool pressed) {
     }
 
     led_event.led = led;
-    led_event.r = pressed ? 255 : 0;
-    led_event.g = pressed ? 255 : 0;
-    led_event.b = pressed ? 255 : 0;
+    led_event.pressed = pressed;
     led_event_pending = true;
 #endif
 }
