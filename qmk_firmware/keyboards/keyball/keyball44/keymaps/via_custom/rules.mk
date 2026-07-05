@@ -17,3 +17,6 @@ SRC += features/kem.c
 
 # KEM Layer
 SRC += features/kem_layer.c
+
+# KEM LED
+SRC += features/kem_led.c

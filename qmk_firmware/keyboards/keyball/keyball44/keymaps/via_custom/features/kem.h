@@ -29,3 +29,4 @@ enum kem_keycodes {
 };
 
 bool kem_process_record(uint16_t keycode, keyrecord_t *record);
+void kem_task(void);

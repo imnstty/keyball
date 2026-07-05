@@ -21,11 +21,22 @@ Copyright 2026 Tetsuya Imanishi
 
 #include "kem.h"
 #include "kem_layer.h"
+#include "kem_led.h"
 
 bool kem_process_record(uint16_t keycode, keyrecord_t *record) {
+    bool continue_process = true;
+
     if (!kem_layer_process_record(keycode, record)) {
-        return false;
+        continue_process = false;
     }
 
-    return true;
+    if (!kem_led_process_record(keycode, record)) {
+        continue_process = false;
+    }
+
+    return continue_process;
+}
+
+void kem_task(void) {
+    kem_led_task();
 }
