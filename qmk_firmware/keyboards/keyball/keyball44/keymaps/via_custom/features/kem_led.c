@@ -7,12 +7,16 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.01
- * @date      2026-07-04
+ * @version   2.02
+ * @date      2026-07-06
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.02  2026-07-06
+ * - Refactored KEM LED state and renderer.
+ * - Changed Hold indicator color from light blue to blue.
+ *
  * Ver 2.01  2026-07-04
  * - Added Hold Candidate Indicator for KEM_L5.
  *
@@ -34,10 +38,27 @@ Copyright 2026 Tetsuya Imanishi
 #define KEM_HOLD_G 0
 #define KEM_HOLD_B 255
 
-static uint8_t kem_l5_led = KEM_NO_LED;
-static bool kem_l5_led_on = false;
-static bool kem_l5_hold_color = false;
-static bool kem_l5_is_left_side = true;
+typedef enum
+{
+    KEM_LED_STATE_OFF = 0,
+    KEM_LED_STATE_TAP,
+    KEM_LED_STATE_HOLD,
+} kem_led_state_t;
+
+typedef struct
+{
+    uint8_t led;
+    bool is_left_side;
+    bool is_active;
+    kem_led_state_t state;
+} kem_led_context_t;
+
+static kem_led_context_t kem_l5_led_ctx = {
+    .led = KEM_NO_LED,
+    .is_left_side = true,
+    .is_active = false,
+    .state = KEM_LED_STATE_OFF,
+};
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},
@@ -53,7 +74,7 @@ static const uint8_t right_key_to_led[4][6] = {
     {KEM_NO_LED, 16, KEM_NO_LED, KEM_NO_LED, KEM_NO_LED, KEM_NO_LED},
 };
 
-static uint8_t kem_led_get_led_index(keyrecord_t *record)
+static uint8_t kem_led_get_led_index(keyrecord_t *record, bool *is_left_side)
 {
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
@@ -65,41 +86,41 @@ static uint8_t kem_led_get_led_index(keyrecord_t *record)
 
     if (row < 4)
     {
-        kem_l5_is_left_side = true;
+        *is_left_side = true;
         return left_key_to_led[row][col];
     }
 
-    kem_l5_is_left_side = false;
+    *is_left_side = false;
     return right_key_to_led[row - 4][col];
 }
 
-static void kem_led_set_l5_rgb(uint8_t r, uint8_t g, uint8_t b)
+static void kem_led_apply_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t g, uint8_t b)
 {
-    if (kem_l5_led == KEM_NO_LED)
+    if (led == KEM_NO_LED)
     {
         return;
     }
 
-    if (kem_l5_is_left_side)
+    if (is_left_side)
     {
         if (is_keyboard_left())
         {
-            rgblight_setrgb_at(r, g, b, kem_l5_led);
+            rgblight_setrgb_at(r, g, b, led);
         }
         else
         {
-            keyball_send_led_event(kem_l5_led, true);
+            keyball_send_led_event(led, true);
         }
     }
     else
     {
         if (!is_keyboard_left())
         {
-            rgblight_setrgb_at(r, g, b, kem_l5_led + 30);
+            rgblight_setrgb_at(r, g, b, led + 30);
         }
         else
         {
-            keyball_send_led_event(kem_l5_led, true);
+            keyball_send_led_event(led, true);
         }
     }
 }
@@ -131,6 +152,46 @@ static void kem_led_restore_layer_color(void)
     }
 }
 
+static void kem_led_render_context(const kem_led_context_t *ctx)
+{
+    if (!ctx->is_active || ctx->led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    switch (ctx->state)
+    {
+    case KEM_LED_STATE_TAP:
+        kem_led_apply_rgb(ctx->led, ctx->is_left_side, KEM_TAP_R, KEM_TAP_G, KEM_TAP_B);
+        break;
+
+    case KEM_LED_STATE_HOLD:
+        kem_led_apply_rgb(ctx->led, ctx->is_left_side, KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B);
+        break;
+
+    case KEM_LED_STATE_OFF:
+    default:
+        break;
+    }
+}
+
+static void kem_led_update_l5_state(void)
+{
+    if (!kem_l5_led_ctx.is_active)
+    {
+        return;
+    }
+
+    if (kem_layer_is_l5_hold_confirmed())
+    {
+        kem_l5_led_ctx.state = KEM_LED_STATE_HOLD;
+    }
+    else
+    {
+        kem_l5_led_ctx.state = KEM_LED_STATE_TAP;
+    }
+}
+
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 {
     if (keycode != KEM_L5)
@@ -140,16 +201,16 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 
     if (record->event.pressed)
     {
-        kem_l5_led = kem_led_get_led_index(record);
-        kem_l5_led_on = true;
-        kem_l5_hold_color = false;
+        kem_l5_led_ctx.led = kem_led_get_led_index(record, &kem_l5_led_ctx.is_left_side);
+        kem_l5_led_ctx.is_active = true;
+        kem_l5_led_ctx.state = KEM_LED_STATE_TAP;
 
-        kem_led_set_l5_rgb(KEM_TAP_R, KEM_TAP_G, KEM_TAP_B);
+        kem_led_render_context(&kem_l5_led_ctx);
     }
     else
     {
-        kem_l5_led_on = false;
-        kem_l5_hold_color = false;
+        kem_l5_led_ctx.is_active = false;
+        kem_l5_led_ctx.state = KEM_LED_STATE_OFF;
 
         kem_led_restore_layer_color();
     }
@@ -159,16 +220,8 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 
 void kem_led_task(void)
 {
-    if (!kem_l5_led_on)
-    {
-        return;
-    }
-
-    if (!kem_l5_hold_color && kem_layer_is_l5_hold_confirmed())
-    {
-        kem_l5_hold_color = true;
-        kem_led_set_l5_rgb(KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B);
-    }
+    kem_led_update_l5_state();
+    kem_led_render_context(&kem_l5_led_ctx);
 }
 
 #else
