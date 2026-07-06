@@ -72,9 +72,6 @@ static kem_led_context_t kem_l5_led_ctx = {
     .state = KEM_LED_STATE_OFF,
 };
 
-static kem_rgb_sync_event_t kem_rgb_sync_event = {0};
-static bool kem_rgb_sync_pending = false;
-
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},
     {18, 15, 11, 7, 4, 1},
