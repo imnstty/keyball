@@ -44,6 +44,7 @@ along with this program.  If not, see <http://gnu.org>.
 
 // KEM Core
 #include "features/kem.h"
+#include "features/kem_led.h"
 
 // OLED Custom
 #include "features/oled.h"
