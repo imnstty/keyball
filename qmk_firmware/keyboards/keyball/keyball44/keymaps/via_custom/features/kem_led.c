@@ -7,16 +7,19 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.03
+ * @version   2.04
  * @date      2026-07-06
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.04  2026-07-06
+ * - Replaced RGB synchronization with KEM LED state synchronization.
+ * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
  * Ver 2.03  2026-07-06
  * - Prepared KEM Split RGB synchronization infrastructure.
  * - Added RPC initialization framework.
- * - Refactored LED engine for future split synchronization.
  *
  * Ver 2.02  2026-07-06
  * - Refactored KEM LED state and renderer.
@@ -31,11 +34,11 @@ Copyright 2026 Tetsuya Imanishi
 #include "kem.h"
 #include "kem_layer.h"
 
-#ifdef RGBLIGHT_ENABLE
-
 #ifdef SPLIT_KEYBOARD
 #include "transactions.h"
 #endif
+
+#ifdef RGBLIGHT_ENABLE
 
 #define KEM_NO_LED 255
 
@@ -65,10 +68,8 @@ typedef struct
 typedef struct
 {
     uint8_t led;
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} kem_rgb_sync_event_t;
+    uint8_t state;
+} kem_led_sync_event_t;
 
 static kem_led_context_t kem_l5_led_ctx = {
     .led = KEM_NO_LED,
@@ -76,6 +77,11 @@ static kem_led_context_t kem_l5_led_ctx = {
     .is_active = false,
     .state = KEM_LED_STATE_OFF,
 };
+
+#ifdef SPLIT_KEYBOARD
+static kem_led_sync_event_t kem_led_sync_event = {0};
+static bool kem_led_sync_pending = false;
+#endif
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},
@@ -111,22 +117,7 @@ static uint8_t kem_led_get_led_index(keyrecord_t *record, bool *is_left_side)
     return right_key_to_led[row - 4][col];
 }
 
-#ifdef SPLIT_KEYBOARD
-static void kem_led_rgb_sync_handler(uint8_t in_buflen, const void *in_data,
-                                     uint8_t out_buflen, void *out_data)
-{
-#ifdef RGBLIGHT_ENABLE
-    const kem_rgb_sync_event_t *ev = (const kem_rgb_sync_event_t *)in_data;
-
-    if (ev->led < RGBLED_NUM)
-    {
-        rgblight_setrgb_at(ev->r, ev->g, ev->b, ev->led);
-    }
-#endif
-}
-#endif
-
-static void kem_led_apply_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t g, uint8_t b)
+static void kem_led_apply_local_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t g, uint8_t b)
 {
     if (led == KEM_NO_LED)
     {
@@ -135,25 +126,93 @@ static void kem_led_apply_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t
 
     if (is_left_side)
     {
-        if (is_keyboard_left())
-        {
-            rgblight_setrgb_at(r, g, b, led);
-        }
-        else
-        {
-            keyball_send_led_event(led, true);
-        }
+        rgblight_setrgb_at(r, g, b, led);
     }
     else
     {
-        if (!is_keyboard_left())
-        {
-            rgblight_setrgb_at(r, g, b, led + 30);
-        }
-        else
-        {
-            keyball_send_led_event(led, true);
-        }
+        rgblight_setrgb_at(r, g, b, led + 30);
+    }
+}
+
+static void kem_led_apply_state(uint8_t led, bool is_left_side, kem_led_state_t state)
+{
+    switch (state)
+    {
+    case KEM_LED_STATE_TAP:
+        kem_led_apply_local_rgb(led, is_left_side, KEM_TAP_R, KEM_TAP_G, KEM_TAP_B);
+        break;
+
+    case KEM_LED_STATE_HOLD:
+        kem_led_apply_local_rgb(led, is_left_side, KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B);
+        break;
+
+    case KEM_LED_STATE_OFF:
+    default:
+        break;
+    }
+}
+
+#ifdef SPLIT_KEYBOARD
+static void kem_led_sync_send(uint8_t led, kem_led_state_t state)
+{
+    if (!is_keyboard_master() || led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    kem_led_sync_event.led = led;
+    kem_led_sync_event.state = (uint8_t)state;
+    kem_led_sync_pending = true;
+}
+
+static void kem_led_sync_flush(void)
+{
+    if (!kem_led_sync_pending || !is_keyboard_master())
+    {
+        return;
+    }
+
+    if (transaction_rpc_send(USER_KEM_LED_SYNC, sizeof(kem_led_sync_event), &kem_led_sync_event))
+    {
+        kem_led_sync_pending = false;
+    }
+}
+
+static void kem_led_sync_handler(uint8_t in_buflen, const void *in_data,
+                                 uint8_t out_buflen, void *out_data)
+{
+    const kem_led_sync_event_t *ev = (const kem_led_sync_event_t *)in_data;
+
+    if (ev->led >= RGBLED_NUM)
+    {
+        return;
+    }
+
+    kem_led_apply_state(ev->led, !is_keyboard_left(), (kem_led_state_t)ev->state);
+}
+#endif
+
+static bool kem_led_is_local_side(bool is_left_side)
+{
+    return (is_left_side && is_keyboard_left()) || (!is_left_side && !is_keyboard_left());
+}
+
+static void kem_led_render_context(const kem_led_context_t *ctx)
+{
+    if (!ctx->is_active || ctx->led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    if (kem_led_is_local_side(ctx->is_left_side))
+    {
+        kem_led_apply_state(ctx->led, ctx->is_left_side, ctx->state);
+    }
+    else
+    {
+#ifdef SPLIT_KEYBOARD
+        kem_led_sync_send(ctx->led, ctx->state);
+#endif
     }
 }
 
@@ -180,29 +239,6 @@ static void kem_led_restore_layer_color(void)
         break;
     case 5:
         rgblight_sethsv_noeeprom(0, 255, 50);
-        break;
-    }
-}
-
-static void kem_led_render_context(const kem_led_context_t *ctx)
-{
-    if (!ctx->is_active || ctx->led == KEM_NO_LED)
-    {
-        return;
-    }
-
-    switch (ctx->state)
-    {
-    case KEM_LED_STATE_TAP:
-        kem_led_apply_rgb(ctx->led, ctx->is_left_side, KEM_TAP_R, KEM_TAP_G, KEM_TAP_B);
-        break;
-
-    case KEM_LED_STATE_HOLD:
-        kem_led_apply_rgb(ctx->led, ctx->is_left_side, KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B);
-        break;
-
-    case KEM_LED_STATE_OFF:
-    default:
         break;
     }
 }
@@ -254,6 +290,10 @@ void kem_led_task(void)
 {
     kem_led_update_l5_state();
     kem_led_render_context(&kem_l5_led_ctx);
+
+#ifdef SPLIT_KEYBOARD
+    kem_led_sync_flush();
+#endif
 }
 
 void kem_led_init(void)
@@ -261,7 +301,7 @@ void kem_led_init(void)
 #ifdef SPLIT_KEYBOARD
     if (!is_keyboard_master())
     {
-        transaction_register_rpc(USER_KEM_RGB_SYNC, kem_led_rgb_sync_handler);
+        transaction_register_rpc(USER_KEM_LED_SYNC, kem_led_sync_handler);
     }
 #endif
 }
@@ -274,6 +314,10 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 }
 
 void kem_led_task(void)
+{
+}
+
+void kem_led_init(void)
 {
 }
 

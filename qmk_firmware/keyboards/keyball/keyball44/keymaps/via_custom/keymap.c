@@ -27,6 +27,9 @@ along with this program.  If not, see <http://gnu.org>.
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.02  2026-07-06
+ * - Updated KEM LED initialization for state synchronization.
+ *
  * Ver 2.01  2026-07-06
  * - Added KEM LED initialization during keyboard startup.
  *

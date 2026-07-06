@@ -13,7 +13,12 @@ Copyright 2026 Tetsuya Imanishi
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
- * Ver 2.03  2026-07-06
+ * Ver 2.04  2026-07-06
+ * - Replaced RGB synchronization with KEM LED State synchronization.
+ * - Completed split Hold Candidate Indicator.
+ * - Added KEM LED state transport framework.
+ *
+ *  * Ver 2.03  2026-07-06
  * - Added KEM LED initialization interface.
  *
  * Ver 2.01  2026-07-04
