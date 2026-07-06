@@ -205,13 +205,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         return false;
     }
 
-    bool kem_continue = kem_process_record(keycode, record);
-
-    if (keycode == KEM_L5)
-    {
-        return kem_continue;
-    }
-
     if (!keyball_get_kem_enabled())
     {
         return kem_continue;

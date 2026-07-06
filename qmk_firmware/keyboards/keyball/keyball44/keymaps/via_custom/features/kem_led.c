@@ -152,6 +152,29 @@ static void kem_led_apply_state(uint8_t led, bool is_left_side, kem_led_state_t 
     }
 }
 
+static void kem_led_apply_remote_state(uint8_t led, kem_led_state_t state)
+{
+    if (led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    switch (state)
+    {
+    case KEM_LED_STATE_TAP:
+        rgblight_setrgb_at(KEM_TAP_R, KEM_TAP_G, KEM_TAP_B, led);
+        break;
+
+    case KEM_LED_STATE_HOLD:
+        rgblight_setrgb_at(KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B, led);
+        break;
+
+    case KEM_LED_STATE_OFF:
+    default:
+        break;
+    }
+}
+
 #ifdef SPLIT_KEYBOARD
 static void kem_led_sync_send(uint8_t led, kem_led_state_t state)
 {
@@ -188,7 +211,7 @@ static void kem_led_sync_handler(uint8_t in_buflen, const void *in_data,
         return;
     }
 
-    kem_led_apply_state(ev->led, !is_keyboard_left(), (kem_led_state_t)ev->state);
+    kem_led_apply_remote_state(ev->led, (kem_led_state_t)ev->state);
 }
 #endif
 
