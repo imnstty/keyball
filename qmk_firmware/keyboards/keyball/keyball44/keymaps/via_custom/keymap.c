@@ -49,15 +49,16 @@ along with this program.  If not, see <http://gnu.org>.
 #include "features/oled.h"
 
 #ifdef OLED_ENABLE
-bool oled_task_user(void) {
+bool oled_task_user(void)
+{
     return oled_task_custom();
 }
 #endif
 
-//void keyball_send_led_event(uint8_t led, bool pressed);
+// void keyball_send_led_event(uint8_t led, bool pressed);
 
 // Keyball LED Event Synchronization
-//enum custom_keycodes {
+// enum custom_keycodes {
 //    KEM_TOG = KEYBALL_SAFE_RANGE,
 //};
 
@@ -96,37 +97,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #define LAYER_RGB_VAL 50
 
-layer_state_t layer_state_set_user(layer_state_t state) {
+layer_state_t layer_state_set_user(layer_state_t state)
+{
     uint8_t layer = get_highest_layer(state);
 
     // Auto enable scroll mode when the highest layer is 3
     keyball_set_scroll_mode(layer == 3);
 
 #ifdef RGBLIGHT_ENABLE
-    switch (layer) {
-        case 0:
-            rgblight_sethsv_noeeprom(0,   0,   LAYER_RGB_VAL);   // White
-            break;
+    switch (layer)
+    {
+    case 0:
+        rgblight_sethsv_noeeprom(0, 0, LAYER_RGB_VAL); // White
+        break;
 
-        case 1:
-            rgblight_sethsv_noeeprom(128, 255, LAYER_RGB_VAL);   // Cyan
-            break;
+    case 1:
+        rgblight_sethsv_noeeprom(128, 255, LAYER_RGB_VAL); // Cyan
+        break;
 
-        case 2:
-            rgblight_sethsv_noeeprom(43,  255, LAYER_RGB_VAL);   // Yellow
-            break;
+    case 2:
+        rgblight_sethsv_noeeprom(43, 255, LAYER_RGB_VAL); // Yellow
+        break;
 
-        case 3:
-            rgblight_sethsv_noeeprom(85,  255, LAYER_RGB_VAL);   // Green
-            break;
+    case 3:
+        rgblight_sethsv_noeeprom(85, 255, LAYER_RGB_VAL); // Green
+        break;
 
-        case 4:
-            rgblight_sethsv_noeeprom(191, 255, LAYER_RGB_VAL);   // Purple
-            break;
+    case 4:
+        rgblight_sethsv_noeeprom(191, 255, LAYER_RGB_VAL); // Purple
+        break;
 
-        case 5:
-            rgblight_sethsv_noeeprom(0,   255, LAYER_RGB_VAL);   // Red
-            break;
+    case 5:
+        rgblight_sethsv_noeeprom(0, 255, LAYER_RGB_VAL); // Red
+        break;
     }
 #endif
 
@@ -135,107 +138,123 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 #ifdef OLED_ENABLE
 
-#    include "lib/oledkit/oledkit.h"
+#include "lib/oledkit/oledkit.h"
 
-void oledkit_render_info_user(void) {
+void oledkit_render_info_user(void)
+{
     keyball_oled_render_keyinfo();
     keyball_oled_render_ballinfo();
     keyball_oled_render_layerinfo();
-    //keyball_oled_render_keminfo();
+    // keyball_oled_render_keminfo();
 }
 #endif
 
 #define NO_LED 255
 
 static const uint8_t left_key_to_led[4][6] = {
-    {17, 14, 10, 6, 3, 0},      // ESC Q W E R T
-    {18, 15, 11, 7, 4, 1},      // TAB A S D F G
-    {19, 16, 12, 8, 5, 2},      // SHIFT Z X C V B
+    {17, 14, 10, 6, 3, 0}, // ESC Q W E R T
+    {18, 15, 11, 7, 4, 1}, // TAB A S D F G
+    {19, 16, 12, 8, 5, 2}, // SHIFT Z X C V B
     {NO_LED, 13, 9, NO_LED, NO_LED, NO_LED},
-//    {NO_LED, 13, 9, 27, 28, 29},
+    //    {NO_LED, 13, 9, 27, 28, 29},
 };
 
 static const uint8_t right_key_to_led[4][6] = {
-    {10, 13, 17, 20, 23, 26},   // Y U I O P DEL
-    {11, 14, 18, 21, 24, 27},   // H J K L ; '
-    {12, 15, 19, 22, 25, 28},   // N M , . / \,
+    {10, 13, 17, 20, 23, 26}, // Y U I O P DEL
+    {11, 14, 18, 21, 24, 27}, // H J K L ; '
+    {12, 15, 19, 22, 25, 28}, // N M , . / \,
     {NO_LED, 16, NO_LED, NO_LED, NO_LED, NO_LED},
-//    {NO_LED, 16, NO_LED, NO_LED, 2, 1},
+    //    {NO_LED, 16, NO_LED, NO_LED, 2, 1},
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
 
 #ifdef OLED_ENABLE
     oled_record_key(keycode, record);
 #endif
 
-    switch (keycode) {
-        case KC_MENU:
-            if (record->event.pressed) {
+    switch (keycode)
+    {
+    case KC_MENU:
+        if (record->event.pressed)
+        {
 #ifdef OLED_ENABLE
-                oled_next_page();
+            oled_next_page();
 #endif
-            }
-            return false;
+        }
+        return false;
 
-        case KC_SELECT:
-            if (record->event.pressed) {
-                keyball_toggle_kem();
-            }
-            return false;
+    case KC_SELECT:
+        if (record->event.pressed)
+        {
+            keyball_toggle_kem();
+        }
+        return false;
     }
 
-    if (!command_process(keycode, record)) {
+    if (!command_process(keycode, record))
+    {
         return false;
     }
 
     bool kem_continue = kem_process_record(keycode, record);
 
-    if (!keyball_get_kem_enabled()) {
+    if (!keyball_get_kem_enabled())
+    {
         return kem_continue;
     }
 
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
 
-    if (col >= 6) {
+    if (col >= 6)
+    {
         return true;
     }
 
-    if (row < 4) {
+    if (row < 4)
+    {
         // 左手キー
         uint8_t led = left_key_to_led[row][col];
 
-        if (led != NO_LED) {
-            if (is_keyboard_left()) {
+        if (led != NO_LED)
+        {
+            if (is_keyboard_left())
+            {
                 // USB左なら左LEDを直接
                 rgblight_setrgb_at(
                     record->event.pressed ? 255 : 0,
                     record->event.pressed ? 255 : 0,
                     record->event.pressed ? 255 : 0,
-                    led
-                );
-            } else {
+                    led);
+            }
+            else
+            {
                 // USB右なら左側slaveへ送る
                 keyball_send_led_event(led, record->event.pressed);
             }
         }
-
-    } else {
+    }
+    else
+    {
         // 右手キー
         uint8_t led = right_key_to_led[row - 4][col];
 
-        if (led != NO_LED) {
-            if (!is_keyboard_left()) {
+        if (led != NO_LED)
+        {
+            if (!is_keyboard_left())
+            {
                 uint8_t actual_led = led + 30;
                 // USB右なら右LEDを直接
                 rgblight_setrgb_at(
                     record->event.pressed ? 255 : 0,
                     record->event.pressed ? 255 : 0,
                     record->event.pressed ? 255 : 0,
-                    actual_led
-                );
-            } else {
+                    actual_led);
+            }
+            else
+            {
                 // USB左なら右側slaveへ送る
                 keyball_send_led_event(led, record->event.pressed);
             }
@@ -245,6 +264,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return kem_continue;
 }
 
-void matrix_scan_user(void) {
+void keyboard_post_init_user(void)
+{
+    kem_led_init();
+}
+
+void matrix_scan_user(void)
+{
     kem_task();
 }
