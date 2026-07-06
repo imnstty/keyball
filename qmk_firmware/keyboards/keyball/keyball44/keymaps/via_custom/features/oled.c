@@ -26,9 +26,7 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
- * Ver 2.01  2026-07-04
- * - Added Hold Candidate Indicator.
- *
+-----------------------------------------------------------------------------
  * Ver 2.00  2026-07-04
  * - Added Tap/Hold Layer5 key.
  * - Updated firmware version display.
@@ -95,7 +93,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.03";
+static const char firmware_version[] = "v2.04";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
