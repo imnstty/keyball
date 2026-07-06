@@ -95,7 +95,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.01";
+static const char firmware_version[] = "v2.03";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
@@ -129,7 +129,8 @@ static void render_layer(void)
 
     char buf[6];
 
-    for (uint8_t i = 1; i <= 5; i++) {
+    for (uint8_t i = 1; i <= 5; i++)
+    {
         buf[i - 1] = layer_state_is(i) ? ('0' + i) : '-';
     }
 
@@ -197,7 +198,8 @@ static void render_cpi_info(void)
 {
     uint16_t cpi = (uint16_t)keyball_get_cpi() * 100;
 
-    if (cpi > 9999) {
+    if (cpi > 9999)
+    {
         cpi = 9999;
     }
 
@@ -222,15 +224,19 @@ static void oled_write_signed_2digit(char label, int8_t value)
 
     buf[0] = label;
 
-    if (value < 0) {
+    if (value < 0)
+    {
         buf[1] = '-';
         abs_value = (uint8_t)(-value);
-    } else {
+    }
+    else
+    {
         buf[1] = '+';
         abs_value = (uint8_t)value;
     }
 
-    if (abs_value > 99) {
+    if (abs_value > 99)
+    {
         abs_value = 99;
     }
 
@@ -310,7 +316,8 @@ void oled_next_page(void)
  ******************************************************************************/
 void oled_record_key(uint16_t keycode, keyrecord_t *record)
 {
-    if (record->event.pressed) {
+    if (record->event.pressed)
+    {
         last_row = record->event.key.row;
         last_col = record->event.key.col;
         last_kc = keycode & 0xFF;
@@ -319,22 +326,27 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
 
 bool oled_task_custom(void)
 {
-    if (!is_keyboard_master()) {
+    if (!is_keyboard_master())
+    {
         oled_set_cursor(0, 0);
         oledkit_render_logo_user();
         return false;
     }
 
-    if (oled_page_changed) {
+    if (oled_page_changed)
+    {
         oled_clear();
         oled_page_changed = false;
     }
 
     oled_set_cursor(0, 0);
 
-    if (oled_page == 0) {
+    if (oled_page == 0)
+    {
         render_page1();
-    } else {
+    }
+    else
+    {
         render_page2();
     }
 
@@ -346,7 +358,8 @@ bool oled_task_custom(void)
  ******************************************************************************/
 oled_rotation_t oled_init_user(oled_rotation_t rotation)
 {
-    if (is_keyboard_master()) {
+    if (is_keyboard_master())
+    {
         return OLED_ROTATION_270;
     }
 

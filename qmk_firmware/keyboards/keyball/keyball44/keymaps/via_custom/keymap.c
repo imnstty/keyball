@@ -21,12 +21,15 @@ along with this program.  If not, see <http://gnu.org>.
  * @project   Keyball44 Custom Firmware
  * @brief     Keymap and custom key processing
  *
- * @version   2.00
- * @date      2026-07-04
+ * @version   2.01
+ * @date      2026-07-06
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.01  2026-07-06
+ * - Added KEM LED initialization during keyboard startup.
+ *
  * Ver 2.00  2026-07-04
  * - Updated header version for KEM Ver.2.0.
  *

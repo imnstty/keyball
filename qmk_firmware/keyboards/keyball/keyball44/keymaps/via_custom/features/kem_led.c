@@ -7,12 +7,17 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.02
+ * @version   2.03
  * @date      2026-07-06
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.03  2026-07-06
+ * - Prepared KEM Split RGB synchronization infrastructure.
+ * - Added RPC initialization framework.
+ * - Refactored LED engine for future split synchronization.
+ *
  * Ver 2.02  2026-07-06
  * - Refactored KEM LED state and renderer.
  * - Changed Hold indicator color from light blue to blue.
