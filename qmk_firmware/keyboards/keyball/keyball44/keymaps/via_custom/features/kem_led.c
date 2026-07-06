@@ -28,6 +28,10 @@ Copyright 2026 Tetsuya Imanishi
 
 #ifdef RGBLIGHT_ENABLE
 
+#ifdef SPLIT_KEYBOARD
+#include "transactions.h"
+#endif
+
 #define KEM_NO_LED 255
 
 #define KEM_TAP_R 255
@@ -53,12 +57,23 @@ typedef struct
     kem_led_state_t state;
 } kem_led_context_t;
 
+typedef struct
+{
+    uint8_t led;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} kem_rgb_sync_event_t;
+
 static kem_led_context_t kem_l5_led_ctx = {
     .led = KEM_NO_LED,
     .is_left_side = true,
     .is_active = false,
     .state = KEM_LED_STATE_OFF,
 };
+
+static kem_rgb_sync_event_t kem_rgb_sync_event = {0};
+static bool kem_rgb_sync_pending = false;
 
 static const uint8_t left_key_to_led[4][6] = {
     {17, 14, 10, 6, 3, 0},

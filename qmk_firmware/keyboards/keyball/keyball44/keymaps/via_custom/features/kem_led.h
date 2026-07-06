@@ -24,3 +24,4 @@ Copyright 2026 Tetsuya Imanishi
 
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record);
 void kem_led_task(void);
+void kem_led_init(void);
