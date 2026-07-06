@@ -106,6 +106,21 @@ static uint8_t kem_led_get_led_index(keyrecord_t *record, bool *is_left_side)
     return right_key_to_led[row - 4][col];
 }
 
+#ifdef SPLIT_KEYBOARD
+static void kem_led_rgb_sync_handler(uint8_t in_buflen, const void *in_data,
+                                     uint8_t out_buflen, void *out_data)
+{
+#ifdef RGBLIGHT_ENABLE
+    const kem_rgb_sync_event_t *ev = (const kem_rgb_sync_event_t *)in_data;
+
+    if (ev->led < RGBLED_NUM)
+    {
+        rgblight_setrgb_at(ev->r, ev->g, ev->b, ev->led);
+    }
+#endif
+}
+#endif
+
 static void kem_led_apply_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t g, uint8_t b)
 {
     if (led == KEM_NO_LED)
@@ -234,6 +249,16 @@ void kem_led_task(void)
 {
     kem_led_update_l5_state();
     kem_led_render_context(&kem_l5_led_ctx);
+}
+
+void kem_led_init(void)
+{
+#ifdef SPLIT_KEYBOARD
+    if (!is_keyboard_master())
+    {
+        transaction_register_rpc(USER_KEM_RGB_SYNC, kem_led_rgb_sync_handler);
+    }
+#endif
 }
 
 #else
