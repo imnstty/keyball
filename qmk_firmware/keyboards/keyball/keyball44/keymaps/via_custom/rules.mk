@@ -6,6 +6,8 @@ VIA_ENABLE = yes
 
 LTO_ENABLE = yes
 
+CONSOLE_ENABLE = yes
+
 # Command Layer
 SRC += features/command_layer.c
 
