@@ -21,12 +21,16 @@ along with this program.  If not, see <http://gnu.org>.
  * @project   Keyball44 Custom Firmware
  * @brief     Keymap and custom key processing
  *
- * @version   2.01
+ * @version   2.11
  * @date      2026-07-06
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.10  2026-07-07
+ * - Routed key events to KEM Debug Engine.
+ * - No functional changes.
+ *
  * Ver 2.02  2026-07-06
  * - Updated KEM LED initialization for state synchronization.
  *
@@ -51,6 +55,7 @@ along with this program.  If not, see <http://gnu.org>.
 // KEM Core
 #include "features/kem.h"
 #include "features/kem_led.h"
+#include "features/kem_debug.h"
 
 // OLED Custom
 #include "features/oled.h"
@@ -176,6 +181,7 @@ static const uint8_t right_key_to_led[4][6] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
+    kem_debug_record_key_event(keycode, record);
 
 #ifdef OLED_ENABLE
     oled_record_key(keycode, record);
