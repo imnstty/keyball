@@ -23,3 +23,6 @@ SRC += features/kem_led.c
 
 # KEM Debug
 SRC += features/kem_debug.c
+
+# KEM Debug Output
+SRC += features/kem_debug_output.c

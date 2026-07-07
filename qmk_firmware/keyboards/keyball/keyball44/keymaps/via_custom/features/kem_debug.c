@@ -13,6 +13,10 @@ Copyright 2026 Tetsuya Imanishi
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.12  2026-07-07
+ * - Routed Debug Engine output through Debug Output Driver.
+ * - No functional changes.
+ *
  * Ver 2.11  2026-07-07
  * - Added Debug Event Handler API.
  * - Routed key event debug records through kem_debug_handle_event().
@@ -26,6 +30,7 @@ Copyright 2026 Tetsuya Imanishi
  ******************************************************************************/
 
 #include "kem_debug.h"
+#include "kem_debug_output.h"
 
 void kem_debug_handle_event(const kem_debug_event_t *event)
 {
@@ -41,7 +46,7 @@ void kem_debug_send(const kem_debug_event_t *event)
 {
     // Debug output is not implemented yet.
     // This function intentionally does nothing.
-    (void)event;
+    kem_debug_output_send(event);
 }
 
 void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record)
