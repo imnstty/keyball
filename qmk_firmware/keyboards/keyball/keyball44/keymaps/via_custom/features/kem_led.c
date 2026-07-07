@@ -20,6 +20,11 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.14  2026-07-07
+ * - Separated LED output responsibility from render context.
+ * - Kept state-based output without RGB transport.
+ * - No functional changes.
+ *
  * Ver 2.13  2026-07-07
  * - Separated KEM_L5 LED state update from event handling.
  * - No functional changes.
@@ -235,6 +240,20 @@ static bool kem_led_is_local_side(bool is_left_side)
     return (is_left_side && is_keyboard_left()) || (!is_left_side && !is_keyboard_left());
 }
 
+static void kem_led_output_state(uint8_t led, bool is_left_side, kem_led_state_t state)
+{
+    if (kem_led_is_local_side(is_left_side))
+    {
+        kem_led_apply_state(led, is_left_side, state);
+    }
+    else
+    {
+#ifdef SPLIT_KEYBOARD
+        kem_led_sync_send(led, state);
+#endif
+    }
+}
+
 static void kem_led_render_context(const kem_led_context_t *ctx)
 {
     if (!ctx->is_active || ctx->led == KEM_NO_LED)
@@ -242,16 +261,7 @@ static void kem_led_render_context(const kem_led_context_t *ctx)
         return;
     }
 
-    if (kem_led_is_local_side(ctx->is_left_side))
-    {
-        kem_led_apply_state(ctx->led, ctx->is_left_side, ctx->state);
-    }
-    else
-    {
-#ifdef SPLIT_KEYBOARD
-        kem_led_sync_send(ctx->led, ctx->state);
-#endif
-    }
+    kem_led_output_state(ctx->led, ctx->is_left_side, ctx->state);
 }
 
 static void kem_led_restore_layer_color(void)
