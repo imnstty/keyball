@@ -7,8 +7,8 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.04
- * @date      2026-07-06
+ * @version   2.10
+ * @date      2026-07-07
  *
  *-----------------------------------------------------------------------------
  * Revision History
@@ -19,6 +19,10 @@ Copyright 2026 Tetsuya Imanishi
  * * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
+ * Ver 2.12  2026-07-07
+ * - Added Key LED Event API wrapper.
+ * - No functional changes.
  *
  * Ver 2.11  2026-07-07
  * - Separated KEM_L5 LED state update from key event handling.
@@ -314,6 +318,11 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
     }
 
     return true;
+}
+
+bool kem_led_handle_key_event(uint16_t keycode, keyrecord_t *record)
+{
+    return kem_led_process_record(keycode, record);
 }
 
 bool kem_led_handle_event(const kem_led_event_t *event)

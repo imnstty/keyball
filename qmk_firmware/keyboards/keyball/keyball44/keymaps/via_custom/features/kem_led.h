@@ -13,6 +13,9 @@ Copyright 2026 Tetsuya Imanishi
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.11  2026-07-07
+ * - Added Key LED Event API declaration.
+ *
  * Ver 2.10  2026-07-07
  * - Added Universal LED Engine event API declarations.
  * - Added kem_led_event_t and kem_led_handle_event().
@@ -47,6 +50,7 @@ typedef struct
 } kem_led_event_t;
 
 bool kem_led_handle_event(const kem_led_event_t *event);
+bool kem_led_handle_key_event(uint16_t keycode, keyrecord_t *record);
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record);
 void kem_led_task(void);
 void kem_led_init(void);
