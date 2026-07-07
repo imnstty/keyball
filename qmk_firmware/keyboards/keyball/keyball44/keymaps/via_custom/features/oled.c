@@ -105,6 +105,7 @@ static bool oled_page_changed = true;
  ******************************************************************************/
 static void render_page1(void);
 static void render_page2(void);
+static void render_page3(void);
 static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
@@ -312,11 +313,44 @@ static void render_page2(void)
 }
 
 /******************************************************************************
+ * @brief Render Page 3 (Debug Page)
+ ******************************************************************************/
+static void render_page3(void)
+{
+    static const char hex[] = "0123456789ABCDEF";
+
+    oled_write_ln_P(PSTR("DBG"), false);
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("POS"), false);
+
+    char pos[5];
+    pos[0] = 'R';
+    pos[1] = '0' + last_row;
+    pos[2] = 'C';
+    pos[3] = '0' + last_col;
+    pos[4] = '\0';
+
+    oled_write_ln(pos, false);
+
+    oled_write_ln_P(PSTR("KEY"), false);
+
+    char kc[5];
+    kc[0] = hex[(last_kc >> 12) & 0x0F];
+    kc[1] = hex[(last_kc >> 8) & 0x0F];
+    kc[2] = hex[(last_kc >> 4) & 0x0F];
+    kc[3] = hex[last_kc & 0x0F];
+    kc[4] = '\0';
+
+    oled_write_ln(kc, false);
+}
+
+/******************************************************************************
  * Public Functions
  ******************************************************************************/
 void oled_next_page(void)
 {
-    oled_page = (oled_page + 1) % 2;
+    oled_page = (oled_page + 1) % 3;
     oled_page_changed = true;
 }
 
@@ -354,9 +388,13 @@ bool oled_task_custom(void)
     {
         render_page1();
     }
-    else
+    else if (oled_page == 1)
     {
         render_page2();
+    }
+    else
+    {
+        render_page3();
     }
 
     return false;
