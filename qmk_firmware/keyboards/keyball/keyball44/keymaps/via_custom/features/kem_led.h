@@ -30,6 +30,19 @@ Copyright 2026 Tetsuya Imanishi
 
 #include QMK_KEYBOARD_H
 
+typedef enum
+{
+    KEM_LED_EVENT_KEY = 0,
+} kem_led_event_type_t;
+
+typedef struct
+{
+    kem_led_event_type_t type;
+    uint16_t keycode;
+    keyrecord_t *record;
+} kem_led_event_t;
+
+bool kem_led_handle_event(const kem_led_event_t *event);
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record);
 void kem_led_task(void);
 void kem_led_init(void);

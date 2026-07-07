@@ -309,6 +309,27 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
     return true;
 }
 
+bool kem_led_handle_event(const kem_led_event_t *event)
+{
+    if (!event)
+    {
+        return true;
+    }
+
+    switch (event->type)
+    {
+    case KEM_LED_EVENT_KEY:
+        if (!event->record)
+        {
+            return true;
+        }
+        return kem_led_process_record(event->keycode, event->record);
+
+    default:
+        return true;
+    }
+}
+
 void kem_led_task(void)
 {
     kem_led_update_l5_state();
