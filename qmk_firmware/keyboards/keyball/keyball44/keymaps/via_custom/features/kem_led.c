@@ -20,6 +20,10 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.15  2026-07-07
+ * - Centralized LED hardware access through kem_led_hw_set_rgb().
+ * - No functional changes.
+ *
  * Ver 2.14  2026-07-07
  * - Separated LED output responsibility from render context.
  * - Kept state-based output without RGB transport.
@@ -137,6 +141,16 @@ static uint8_t kem_led_get_led_index(keyrecord_t *record, bool *is_left_side)
     return right_key_to_led[row - 4][col];
 }
 
+static void kem_led_hw_set_rgb(uint8_t led, uint8_t r, uint8_t g, uint8_t b)
+{
+    if (led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    rgblight_setrgb_at(r, g, b, led);
+}
+
 static void kem_led_apply_local_rgb(uint8_t led, bool is_left_side, uint8_t r, uint8_t g, uint8_t b)
 {
     if (led == KEM_NO_LED)
@@ -146,11 +160,11 @@ static void kem_led_apply_local_rgb(uint8_t led, bool is_left_side, uint8_t r, u
 
     if (is_left_side)
     {
-        rgblight_setrgb_at(r, g, b, led);
+        kem_led_hw_set_rgb(led, r, g, b);
     }
     else
     {
-        rgblight_setrgb_at(r, g, b, led + 30);
+        kem_led_hw_set_rgb(led + 30, r, g, b);
     }
 }
 
@@ -182,11 +196,11 @@ static void kem_led_apply_remote_state(uint8_t led, kem_led_state_t state)
     switch (state)
     {
     case KEM_LED_STATE_TAP:
-        rgblight_setrgb_at(KEM_TAP_R, KEM_TAP_G, KEM_TAP_B, led);
+        kem_led_hw_set_rgb(led, KEM_TAP_R, KEM_TAP_G, KEM_TAP_B);
         break;
 
     case KEM_LED_STATE_HOLD:
-        rgblight_setrgb_at(KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B, led);
+        kem_led_hw_set_rgb(led, KEM_HOLD_R, KEM_HOLD_G, KEM_HOLD_B);
         break;
 
     case KEM_LED_STATE_OFF:
