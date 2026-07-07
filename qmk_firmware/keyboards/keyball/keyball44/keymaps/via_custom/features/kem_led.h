@@ -7,8 +7,8 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine Interface
  *
- * @version   2.03
- * @date      2026-07-06
+ * @version   2.10
+ * @date      2026-07-07
  *
  *-----------------------------------------------------------------------------
  * Revision History
@@ -22,7 +22,7 @@ Copyright 2026 Tetsuya Imanishi
  * - Completed split Hold Candidate Indicator.
  * - Added KEM LED state transport framework.
  *
- *  * Ver 2.03  2026-07-06
+ * Ver 2.03  2026-07-06
  * - Added KEM LED initialization interface.
  *
  * Ver 2.01  2026-07-04

@@ -30,7 +30,13 @@ bool kem_process_record(uint16_t keycode, keyrecord_t *record)
 {
     bool continue_process = true;
 
-    if (!kem_layer_process_record(keycode, record))
+    kem_led_event_t led_event = {
+        .type = KEM_LED_EVENT_KEY,
+        .keycode = keycode,
+        .record = record,
+    };
+
+    if (!kem_led_handle_event(&led_event))
     {
         continue_process = false;
     }
