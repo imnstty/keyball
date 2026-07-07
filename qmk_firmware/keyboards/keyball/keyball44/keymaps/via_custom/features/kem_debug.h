@@ -35,8 +35,10 @@ typedef struct
     uint8_t row;
     uint8_t col;
     uint16_t time;
+    uint8_t led;
 } kem_debug_event_t;
 
 void kem_debug_handle_event(const kem_debug_event_t *event);
 void kem_debug_send(const kem_debug_event_t *event);
 void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record);
+void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, uint8_t led);

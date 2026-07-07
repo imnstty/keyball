@@ -181,7 +181,6 @@ static const uint8_t right_key_to_led[4][6] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-    kem_debug_record_key_event(keycode, record);
 
 #ifdef OLED_ENABLE
     oled_record_key(keycode, record);
@@ -220,6 +219,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
     uint8_t row = record->event.key.row;
     uint8_t col = record->event.key.col;
+    uint8_t debug_led = NO_LED;
 
     if (col >= 6)
     {
@@ -230,6 +230,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     {
         // 左手キー
         uint8_t led = left_key_to_led[row][col];
+        debug_led = led;
 
         if (led != NO_LED)
         {
@@ -253,6 +254,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     {
         // 右手キー
         uint8_t led = right_key_to_led[row - 4][col];
+        debug_led = led;
 
         if (led != NO_LED)
         {
@@ -274,6 +276,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     }
 
+    kem_debug_record_key_event_with_led(keycode, record, debug_led);
     return kem_continue;
 }
 

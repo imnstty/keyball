@@ -61,6 +61,7 @@ static void kem_debug_output_raw_hid_send(const kem_debug_event_t *event)
 
     packet[8] = (uint8_t)(event->time & 0xFF);
     packet[9] = (uint8_t)((event->time >> 8) & 0xFF);
+    packet[10] = event->led;
 
     raw_hid_send(packet, KEM_DEBUG_PACKET_SIZE);
 #else

@@ -63,6 +63,27 @@ void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record)
         .row = record->event.key.row,
         .col = record->event.key.col,
         .time = timer_read(),
+        .led = 255,
+    };
+
+    kem_debug_handle_event(&event);
+}
+
+void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, uint8_t led)
+{
+    if (!record)
+    {
+        return;
+    }
+
+    kem_debug_event_t event = {
+        .type = KEM_DEBUG_EVENT_KEY,
+        .keycode = keycode,
+        .pressed = record->event.pressed,
+        .row = record->event.key.row,
+        .col = record->event.key.col,
+        .time = timer_read(),
+        .led = led,
     };
 
     kem_debug_handle_event(&event);
