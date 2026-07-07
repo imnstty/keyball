@@ -20,6 +20,10 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.11  2026-07-07
+ * - Separated KEM_L5 LED state update from key event handling.
+ * - No functional changes.
+ *
  * Ver 2.03  2026-07-06
  * - Prepared KEM Split RGB synchronization infrastructure.
  * - Added RPC initialization framework.
@@ -286,11 +290,11 @@ static void kem_led_update_l5_state(void)
     }
 }
 
-bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
+static void kem_led_update_l5_key_state(uint16_t keycode, keyrecord_t *record)
 {
     if (keycode != KEM_L5)
     {
-        return true;
+        return;
     }
 
     if (record->event.pressed)
@@ -298,14 +302,29 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
         kem_l5_led_ctx.led = kem_led_get_led_index(record, &kem_l5_led_ctx.is_left_side);
         kem_l5_led_ctx.is_active = true;
         kem_l5_led_ctx.state = KEM_LED_STATE_TAP;
-
-        kem_led_render_context(&kem_l5_led_ctx);
     }
     else
     {
         kem_l5_led_ctx.is_active = false;
         kem_l5_led_ctx.state = KEM_LED_STATE_OFF;
+    }
+}
 
+bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
+{
+    if (keycode != KEM_L5)
+    {
+        return true;
+    }
+
+    kem_led_update_l5_key_state(keycode, record);
+
+    if (record->event.pressed)
+    {
+        kem_led_render_context(&kem_l5_led_ctx);
+    }
+    else
+    {
         kem_led_restore_layer_color();
     }
 
