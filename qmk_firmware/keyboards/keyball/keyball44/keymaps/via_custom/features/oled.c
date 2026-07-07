@@ -180,11 +180,22 @@ static void render_key_info(void)
 
     oled_write_ln(pos, false);
 
+    /*
     char kc[4];
     kc[0] = 'K';
     kc[1] = hex[(last_kc >> 4) & 0x0F];
     kc[2] = hex[last_kc & 0x0F];
     kc[3] = '\0';
+    */
+    char kc[7];
+
+    kc[0] = '0';
+    kc[1] = 'x';
+    kc[2] = hex[(last_kc >> 12) & 0x0F];
+    kc[3] = hex[(last_kc >> 8) & 0x0F];
+    kc[4] = hex[(last_kc >> 4) & 0x0F];
+    kc[5] = hex[last_kc & 0x0F];
+    kc[6] = '\0';
 
     oled_write_ln(kc, false);
 }
@@ -318,7 +329,7 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
     {
         last_row = record->event.key.row;
         last_col = record->event.key.col;
-        last_kc = keycode & 0xFF;
+        last_kc = keycode;
     }
 }
 
