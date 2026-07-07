@@ -338,6 +338,11 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
     }
     else
     {
+        kem_led_output_state(
+            kem_l5_led_ctx.led,
+            kem_l5_led_ctx.is_left_side,
+            KEM_LED_STATE_OFF);
+
         kem_led_restore_layer_color();
     }
 
