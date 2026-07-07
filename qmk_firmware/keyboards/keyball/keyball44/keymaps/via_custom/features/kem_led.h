@@ -13,6 +13,10 @@ Copyright 2026 Tetsuya Imanishi
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.10  2026-07-07
+ * - Added Universal LED Engine event API declarations.
+ * - Added kem_led_event_t and kem_led_handle_event().
+ *
  * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED State synchronization.
  * - Completed split Hold Candidate Indicator.
