@@ -290,26 +290,6 @@ static void kem_led_update_l5_state(void)
     }
 }
 
-static void kem_led_update_l5_key_state(uint16_t keycode, keyrecord_t *record)
-{
-    if (keycode != KEM_L5)
-    {
-        return;
-    }
-
-    if (record->event.pressed)
-    {
-        kem_l5_led_ctx.led = kem_led_get_led_index(record, &kem_l5_led_ctx.is_left_side);
-        kem_l5_led_ctx.is_active = true;
-        kem_l5_led_ctx.state = KEM_LED_STATE_TAP;
-    }
-    else
-    {
-        kem_l5_led_ctx.is_active = false;
-        kem_l5_led_ctx.state = KEM_LED_STATE_OFF;
-    }
-}
-
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 {
     if (keycode != KEM_L5)
@@ -317,14 +297,19 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
         return true;
     }
 
-    kem_led_update_l5_key_state(keycode, record);
-
     if (record->event.pressed)
     {
+        kem_l5_led_ctx.led = kem_led_get_led_index(record, &kem_l5_led_ctx.is_left_side);
+        kem_l5_led_ctx.is_active = true;
+        kem_l5_led_ctx.state = KEM_LED_STATE_TAP;
+
         kem_led_render_context(&kem_l5_led_ctx);
     }
     else
     {
+        kem_l5_led_ctx.is_active = false;
+        kem_l5_led_ctx.state = KEM_LED_STATE_OFF;
+
         kem_led_restore_layer_color();
     }
 
