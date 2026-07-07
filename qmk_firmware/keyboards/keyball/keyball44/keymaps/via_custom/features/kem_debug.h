@@ -2,6 +2,22 @@
 Copyright 2026 Tetsuya Imanishi
 */
 
+/******************************************************************************
+ * @file      kem_debug.h
+ * @project   Keyball44 Custom Firmware
+ * @brief     KEM Debug Engine
+ *
+ * @version   2.10
+ * @date      2026-07-07
+ *
+ *-----------------------------------------------------------------------------
+ * Revision History
+ *-----------------------------------------------------------------------------
+ * Ver 2.11  2026-07-07
+ * - Added kem_debug_handle_event() declaration.
+ *
+ ******************************************************************************/
+
 #pragma once
 
 #include QMK_KEYBOARD_H
@@ -21,5 +37,6 @@ typedef struct
     uint16_t time;
 } kem_debug_event_t;
 
+void kem_debug_handle_event(const kem_debug_event_t *event);
 void kem_debug_send(const kem_debug_event_t *event);
 void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record);

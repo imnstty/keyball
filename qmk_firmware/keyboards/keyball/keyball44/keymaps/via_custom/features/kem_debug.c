@@ -13,6 +13,11 @@ Copyright 2026 Tetsuya Imanishi
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.11  2026-07-07
+ * - Added Debug Event Handler API.
+ * - Routed key event debug records through kem_debug_handle_event().
+ * - No functional changes.
+ *
  * Ver 2.10  2026-07-07
  * - Added KEM Debug Framework skeleton.
  * - Added key event debug structure and no-op send function.
@@ -21,6 +26,16 @@ Copyright 2026 Tetsuya Imanishi
  ******************************************************************************/
 
 #include "kem_debug.h"
+
+void kem_debug_handle_event(const kem_debug_event_t *event)
+{
+    if (!event)
+    {
+        return;
+    }
+
+    kem_debug_send(event);
+}
 
 void kem_debug_send(const kem_debug_event_t *event)
 {
@@ -45,5 +60,5 @@ void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record)
         .time = timer_read(),
     };
 
-    kem_debug_send(&event);
+    kem_debug_handle_event(&event);
 }
