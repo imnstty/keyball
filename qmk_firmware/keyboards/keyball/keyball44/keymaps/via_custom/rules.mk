@@ -6,8 +6,6 @@ VIA_ENABLE = yes
 
 LTO_ENABLE = yes
 
-CONSOLE_ENABLE = yes
-
 # Command Layer
 SRC += features/command_layer.c
 
@@ -22,3 +20,6 @@ SRC += features/kem_layer.c
 
 # KEM LED
 SRC += features/kem_led.c
+
+# KEM Debug
+SRC += features/kem_debug.c
