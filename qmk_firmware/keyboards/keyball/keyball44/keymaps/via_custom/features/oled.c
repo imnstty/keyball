@@ -98,6 +98,7 @@ static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
 static uint16_t last_kc = 0;
+static uint8_t last_led = 255;
 static bool oled_page_changed = true;
 
 /******************************************************************************
@@ -110,6 +111,7 @@ static void render_layer(void);
 static void render_lock_status(void);
 static void render_keyball_status(void);
 static void render_key_info(void);
+static void render_led_info(void);
 static void render_version(void);
 static void render_cpi_info(void);
 static void render_ball_info(void);
@@ -202,6 +204,25 @@ static void render_key_info(void)
 }
 
 /******************************************************************************
+ * @brief Render last key LED Information
+ ******************************************************************************/
+static void render_led_info(void)
+{
+    if (last_led == 255)
+    {
+        oled_write_ln_P(PSTR("--"), false);
+        return;
+    }
+
+    char buf[3];
+    buf[0] = '0' + (last_led / 10);
+    buf[1] = '0' + (last_led % 10);
+    buf[2] = '\0';
+
+    oled_write_ln(buf, false);
+}
+
+/******************************************************************************
  * @brief Render CPI information
  ******************************************************************************/
 static void render_cpi_info(void)
@@ -290,6 +311,7 @@ static void render_page1(void)
 
     oled_write_ln_P(PSTR(""), false);
     render_key_info();
+    render_led_info();
 }
 
 /******************************************************************************
@@ -306,6 +328,7 @@ static void render_page2(void)
     oled_write_ln_P(PSTR(""), false);
 
     render_key_info();
+    render_led_info();
 
     oled_write_ln_P(PSTR(""), false);
 
@@ -332,15 +355,15 @@ static void render_page3(void)
     pos[4] = '\0';
 
     oled_write_ln(pos, false);
+    oled_write_ln_P(PSTR(""), false);
 
     oled_write_ln_P(PSTR("KEY"), false);
+    oled_write_ln(kc, false);
 
-    char kc[5];
-    kc[0] = hex[(last_kc >> 12) & 0x0F];
-    kc[1] = hex[(last_kc >> 8) & 0x0F];
-    kc[2] = hex[(last_kc >> 4) & 0x0F];
-    kc[3] = hex[last_kc & 0x0F];
-    kc[4] = '\0';
+    oled_write_ln_P(PSTR(""), false);
+
+    oled_write_ln_P(PSTR("LED"), false);
+    render_led_info();
 
     oled_write_ln(kc, false);
 }
@@ -364,6 +387,18 @@ void oled_record_key(uint16_t keycode, keyrecord_t *record)
         last_row = record->event.key.row;
         last_col = record->event.key.col;
         last_kc = keycode;
+        last_led = 255;
+    }
+}
+
+void oled_record_key_with_led(uint16_t keycode, keyrecord_t *record, uint8_t led)
+{
+    if (record->event.pressed)
+    {
+        last_row = record->event.key.row;
+        last_col = record->event.key.col;
+        last_kc = keycode;
+        last_led = led;
     }
 }
 
