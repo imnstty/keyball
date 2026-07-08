@@ -30,3 +30,4 @@ void oled_next_page(void);
 #endif
 
 void oled_record_key(uint16_t keycode, keyrecord_t *record);
+void oled_record_key_with_led(uint16_t keycode, keyrecord_t *record, uint8_t led);
