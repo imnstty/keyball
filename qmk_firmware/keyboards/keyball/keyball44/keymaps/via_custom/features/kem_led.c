@@ -20,6 +20,10 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.17  2026-07-08
+ * - Added Tap/Hold keycode classifier.
+ * - No LED behavior changes.
+ *
  * Ver 2.16  2026-07-08
  * - Added Matrix LED Event API.
  * - Added instant white LED output on matrix press.
@@ -308,6 +312,13 @@ static void kem_led_restore_layer_color(void)
         rgblight_sethsv_noeeprom(0, 255, 50);
         break;
     }
+}
+
+static bool kem_led_is_tap_hold_keycode(uint16_t keycode)
+{
+    uint16_t type = keycode & 0xF000;
+
+    return type == 0x2000 || type == 0x4000;
 }
 
 static void kem_led_update_l5_state(void)
