@@ -228,6 +228,7 @@ static void kem_led_apply_remote_state(uint8_t led, kem_led_state_t state)
 
     case KEM_LED_STATE_OFF:
     default:
+        kem_led_hw_set_rgb(led, 0, 0, 0);
         break;
     }
 }
