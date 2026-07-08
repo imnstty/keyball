@@ -32,9 +32,16 @@ Copyright 2026 Tetsuya Imanishi
 #include "kem_debug.h"
 #include "kem_debug_output.h"
 
+static bool s_debug_enabled = false;
+
 void kem_debug_handle_event(const kem_debug_event_t *event)
 {
     if (!event)
+    {
+        return;
+    }
+
+    if (!s_debug_enabled)
     {
         return;
     }
@@ -87,4 +94,19 @@ void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, 
     };
 
     kem_debug_handle_event(&event);
+}
+
+void kem_debug_enable(bool enable)
+{
+    s_debug_enabled = enable;
+}
+
+bool kem_debug_is_enabled(void)
+{
+    return s_debug_enabled;
+}
+
+void kem_debug_toggle(void)
+{
+    s_debug_enabled = !s_debug_enabled;
 }
