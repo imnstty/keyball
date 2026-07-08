@@ -71,7 +71,7 @@ bool oled_task_user(void)
 
 // Keyball LED Event Synchronization
 // enum custom_keycodes {
-//    KEM_TOG = KEYBALL_SAFE_RANGE,
+// KEM_TOG = KEYBALL_SAFE_RANGE,
 //};
 
 // clang-format off

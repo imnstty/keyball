@@ -370,8 +370,6 @@ static void render_page3(void)
 
     oled_write_ln_P(PSTR("LED"), false);
     render_led_info();
-
-    oled_write_ln(kc, false);
 }
 
 /******************************************************************************
