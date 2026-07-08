@@ -205,6 +205,7 @@ static void kem_led_apply_state(uint8_t led, bool is_left_side, kem_led_state_t 
 
     case KEM_LED_STATE_OFF:
     default:
+        kem_led_apply_local_rgb(led, is_left_side, 0, 0, 0);
         break;
     }
 }
