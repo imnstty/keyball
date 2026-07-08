@@ -27,6 +27,11 @@ along with this program.  If not, see <http://gnu.org>.
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.22  2026-07-08
+ * - Removed duplicated direct key LED output from process_record_user().
+ * - Kept LED number lookup for Debug Framework.
+ * - LED output is now handled by KEM LED matrix event path.
+ *
  * Ver 2.10  2026-07-07
  * - Routed key events to KEM Debug Engine.
  * - No functional changes.
@@ -235,52 +240,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
     if (row < 4)
     {
-        // 左手キー
-        uint8_t led = left_key_to_led[row][col];
-        debug_led = led;
-
-        if (led != NO_LED)
-        {
-            if (is_keyboard_left())
-            {
-                // USB左なら左LEDを直接
-                rgblight_setrgb_at(
-                    record->event.pressed ? 255 : 0,
-                    record->event.pressed ? 255 : 0,
-                    record->event.pressed ? 255 : 0,
-                    led);
-            }
-            else
-            {
-                // USB右なら左側slaveへ送る
-                keyball_send_led_event(led, record->event.pressed);
-            }
-        }
+        debug_led = left_key_to_led[row][col];
     }
     else
     {
-        // 右手キー
-        uint8_t led = right_key_to_led[row - 4][col];
-        debug_led = led;
-
-        if (led != NO_LED)
-        {
-            if (!is_keyboard_left())
-            {
-                uint8_t actual_led = led + 30;
-                // USB右なら右LEDを直接
-                rgblight_setrgb_at(
-                    record->event.pressed ? 255 : 0,
-                    record->event.pressed ? 255 : 0,
-                    record->event.pressed ? 255 : 0,
-                    actual_led);
-            }
-            else
-            {
-                // USB左なら右側slaveへ送る
-                keyball_send_led_event(led, record->event.pressed);
-            }
-        }
+        debug_led = right_key_to_led[row - 4][col];
     }
 
 #ifdef OLED_ENABLE
