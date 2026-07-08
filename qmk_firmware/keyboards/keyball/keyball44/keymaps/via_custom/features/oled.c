@@ -27,6 +27,11 @@
  * Revision History
  *-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
+ * Ver 2.21  2026-07-08
+ * - Added Tap/Hold LED tracking context.
+ * - Added promotion from matrix candidate to Tap/Hold tracking.
+ * - No LED behavior changes.
+ *
  * Ver 2.00  2026-07-04
  * - Added Tap/Hold Layer5 key.
  * - Updated firmware version display.
@@ -94,7 +99,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.11";
+static const char firmware_version[] = "v2.21";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;

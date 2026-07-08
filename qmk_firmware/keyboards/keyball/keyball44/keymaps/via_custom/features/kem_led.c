@@ -7,8 +7,8 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.10
- * @date      2026-07-07
+ * @version   2.20
+ * @date      2026-07-08
  *
  *-----------------------------------------------------------------------------
  * Revision History
@@ -19,6 +19,11 @@ Copyright 2026 Tetsuya Imanishi
  * * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
+ * Ver 2.21  2026-07-08
+ * - Added Tap/Hold LED tracking context.
+ * - Added promotion from matrix candidate to Tap/Hold tracking.
+ * - No LED behavior changes.
  *
  * Ver 2.17  2026-07-08
  * - Added Tap/Hold keycode classifier.
@@ -109,6 +114,27 @@ static kem_led_context_t kem_l5_led_ctx = {
     .is_left_side = true,
     .is_active = false,
     .state = KEM_LED_STATE_OFF,
+};
+
+typedef struct
+{
+    bool active;
+    uint8_t row;
+    uint8_t col;
+    uint8_t led;
+    bool is_left_side;
+    uint16_t press_time;
+    bool hold_confirmed;
+} kem_tap_hold_context_t;
+
+static kem_tap_hold_context_t kem_tap_hold_ctx = {
+    .active = false,
+    .row = 0,
+    .col = 0,
+    .led = KEM_NO_LED,
+    .is_left_side = true,
+    .press_time = 0,
+    .hold_confirmed = false,
 };
 
 #ifdef SPLIT_KEYBOARD
@@ -321,6 +347,48 @@ static bool __attribute__((unused)) kem_led_is_tap_hold_keycode(uint16_t keycode
     return type == 0x2000 || type == 0x4000;
 }
 
+static void kem_led_track_matrix_candidate(uint8_t row,
+                                           uint8_t col,
+                                           bool pressed,
+                                           uint8_t led)
+{
+    if (!pressed || led == KEM_NO_LED)
+    {
+        return;
+    }
+
+    kem_tap_hold_ctx.active = false;
+    kem_tap_hold_ctx.row = row;
+    kem_tap_hold_ctx.col = col;
+    kem_tap_hold_ctx.led = led;
+    kem_tap_hold_ctx.is_left_side = row < 4;
+    kem_tap_hold_ctx.press_time = timer_read();
+    kem_tap_hold_ctx.hold_confirmed = false;
+}
+
+static void kem_led_promote_tap_hold_tracking(uint16_t keycode,
+                                              keyrecord_t *record)
+{
+    if (!record->event.pressed)
+    {
+        return;
+    }
+
+    if (!kem_led_is_tap_hold_keycode(keycode))
+    {
+        return;
+    }
+
+    if (kem_tap_hold_ctx.row != record->event.key.row ||
+        kem_tap_hold_ctx.col != record->event.key.col)
+    {
+        return;
+    }
+
+    kem_tap_hold_ctx.active = true;
+    kem_tap_hold_ctx.hold_confirmed = false;
+}
+
 static void kem_led_update_l5_state(void)
 {
     if (!kem_l5_led_ctx.is_active)
@@ -355,6 +423,8 @@ static void kem_led_update_l5_key_state(keyrecord_t *record)
 
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 {
+    kem_led_promote_tap_hold_tracking(keycode, record);
+
     if (keycode != KEM_L5)
     {
         return true;
@@ -439,10 +509,17 @@ bool kem_led_process_matrix_event(uint8_t row,
 
     if (pressed)
     {
+        kem_led_track_matrix_candidate(row, col, pressed, led);
         kem_led_output_state(led, is_left_side, KEM_LED_STATE_TAP);
     }
     else
     {
+        if (kem_tap_hold_ctx.row == row && kem_tap_hold_ctx.col == col)
+        {
+            kem_tap_hold_ctx.active = false;
+            kem_tap_hold_ctx.hold_confirmed = false;
+        }
+
         kem_led_restore_layer_color();
     }
 
