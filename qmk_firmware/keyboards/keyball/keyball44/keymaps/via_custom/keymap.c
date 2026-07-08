@@ -276,6 +276,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
         }
     }
 
+#ifdef OLED_ENABLE
+    oled_record_key_with_led(keycode, record, debug_led);
+#endif
+
     kem_debug_record_key_event_with_led(keycode, record, debug_led);
     return kem_continue;
 }
