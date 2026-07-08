@@ -320,7 +320,21 @@ void matrix_scan_user(void)
 
                     // ここでDebug出力
                     // keycodeは未確定なので仮で0xFFFFを送る
-                    kem_debug_record_matrix_event(row, col, pressed);
+                    uint8_t led = NO_LED;
+
+                    if (col < 6)
+                    {
+                        if (row < 4)
+                        {
+                            led = left_key_to_led[row][col];
+                        }
+                        else
+                        {
+                            led = right_key_to_led[row - 4][col];
+                        }
+                    }
+
+                    kem_debug_record_matrix_event_with_led(row, col, pressed, led);
                 }
             }
 
