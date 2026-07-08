@@ -335,6 +335,7 @@ void matrix_scan_user(void)
                     }
 
                     kem_debug_record_matrix_event_with_led(row, col, pressed, led);
+                    kem_led_process_matrix_event(row, col, pressed, led);
                 }
             }
 

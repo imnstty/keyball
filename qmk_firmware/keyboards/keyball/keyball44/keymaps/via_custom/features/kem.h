@@ -23,10 +23,16 @@ Copyright 2026 Tetsuya Imanishi
 
 #include QMK_KEYBOARD_H
 
-enum kem_keycodes {
+enum kem_keycodes
+{
     KEM_TOG = KEYBALL_SAFE_RANGE,
     KEM_L5,
 };
 
 bool kem_process_record(uint16_t keycode, keyrecord_t *record);
 void kem_task(void);
+
+bool kem_led_process_matrix_event(uint8_t row,
+                                  uint8_t col,
+                                  bool pressed,
+                                  uint8_t led);

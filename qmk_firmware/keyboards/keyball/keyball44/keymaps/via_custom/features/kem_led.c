@@ -411,6 +411,30 @@ void kem_led_init(void)
 
 #else
 
+bool kem_led_process_matrix_event(uint8_t row,
+                                  uint8_t col,
+                                  bool pressed,
+                                  uint8_t led)
+{
+    if (led == KEM_NO_LED)
+    {
+        return true;
+    }
+
+    bool is_left_side = row < 4;
+
+    if (pressed)
+    {
+        kem_led_output_state(led, is_left_side, KEM_LED_STATE_TAP);
+    }
+    else
+    {
+        kem_led_restore_layer_color();
+    }
+
+    return true;
+}
+
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 {
     return true;
