@@ -357,6 +357,14 @@ static void render_page3(void)
     oled_write_ln(pos, false);
     oled_write_ln_P(PSTR(""), false);
 
+    char kc[5];
+
+    kc[0] = hex[(last_kc >> 12) & 0x0F];
+    kc[1] = hex[(last_kc >> 8) & 0x0F];
+    kc[2] = hex[(last_kc >> 4) & 0x0F];
+    kc[3] = hex[last_kc & 0x0F];
+    kc[4] = '\0';
+
     oled_write_ln_P(PSTR("KEY"), false);
     oled_write_ln(kc, false);
 
