@@ -113,6 +113,7 @@ void kem_debug_record_matrix_event(uint8_t row,
     kem_debug_handle_event(&event);
 }
 
+#ifdef KEM_DEBUG_MATRIX_ENABLE
 void kem_debug_record_matrix_event_with_led(uint8_t row,
                                             uint8_t col,
                                             bool pressed,
@@ -130,6 +131,7 @@ void kem_debug_record_matrix_event_with_led(uint8_t row,
 
     kem_debug_handle_event(&event);
 }
+#endif
 
 void kem_debug_enable(bool enable)
 {

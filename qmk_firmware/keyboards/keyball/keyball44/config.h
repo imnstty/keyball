@@ -85,4 +85,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
 
+// KEM Debug settings
 #define KEM_DEBUG_ENABLE
+// #define KEM_DEBUG_MATRIX_ENABLE

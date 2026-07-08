@@ -47,10 +47,12 @@ void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, 
 void kem_debug_record_matrix_event(uint8_t row,
                                    uint8_t col,
                                    bool pressed);
+#ifdef KEM_DEBUG_MATRIX_ENABLE
 void kem_debug_record_matrix_event_with_led(uint8_t row,
                                             uint8_t col,
                                             bool pressed,
                                             uint8_t led);
+#endif
 
 void kem_debug_enable(bool enable);
 bool kem_debug_is_enabled(void);

@@ -21,12 +21,16 @@ along with this program.  If not, see <http://gnu.org>.
  * @project   Keyball44 Custom Firmware
  * @brief     Keymap and custom key processing
  *
- * @version   2.11
- * @date      2026-07-06
+ * @version   2.20
+ * @date      2026-07-08
  *
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
+ * Ver 2.23  2026-07-08
+ * - Added KEM_DEBUG_MATRIX_ENABLE guard for temporary Matrix Debug output.
+ * - Kept matrix-based LED event path always enabled.
+ *
  * Ver 2.22  2026-07-08
  * - Removed duplicated direct key LED output from process_record_user().
  * - Kept LED number lookup for Debug Framework.
@@ -298,7 +302,10 @@ void matrix_scan_user(void)
                         }
                     }
 
+#ifdef KEM_DEBUG_MATRIX_ENABLE
                     kem_debug_record_matrix_event_with_led(row, col, pressed, led);
+#endif
+
                     kem_led_process_matrix_event(row, col, pressed, led);
                 }
             }
