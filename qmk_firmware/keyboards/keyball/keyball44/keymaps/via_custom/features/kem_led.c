@@ -366,7 +366,13 @@ static void kem_led_update_l5_key_state(keyrecord_t *record)
 
 bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
 {
-    kem_led_promote_tap_hold_tracking(keycode, record);
+    if (record->event.pressed &&
+        kem_led_is_tap_hold_keycode(keycode) &&
+        kem_th_row == record->event.key.row &&
+        kem_th_col == record->event.key.col)
+    {
+        kem_th_active = true;
+    }
 
     if (keycode != KEM_L5)
     {
