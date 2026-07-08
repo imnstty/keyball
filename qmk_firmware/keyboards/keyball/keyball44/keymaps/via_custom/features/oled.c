@@ -28,7 +28,7 @@
  *-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
  * Ver 2.21  2026-07-08
- * - Added Tap/Hold LED tracking context.
+ * - Added lightweight Tap/Hold LED tracking state.
  * - Added promotion from matrix candidate to Tap/Hold tracking.
  * - No LED behavior changes.
  *
