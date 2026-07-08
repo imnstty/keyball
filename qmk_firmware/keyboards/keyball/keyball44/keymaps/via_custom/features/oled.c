@@ -358,8 +358,8 @@ static void render_page3(void)
     char kc[5];
 
     kc[0] = hex[(last_kc >> 12) & 0x0F];
-    kc[1] = hex[(last_kc >> 8) & 0x0F] aa
-        kc[2] = hex[(last_kc >> 4) & 0x0F];
+    kc[1] = hex[(last_kc >> 8) & 0x0F];
+    kc[2] = hex[(last_kc >> 4) & 0x0F];
     kc[3] = hex[last_kc & 0x0F];
     kc[4] = '\0';
 
