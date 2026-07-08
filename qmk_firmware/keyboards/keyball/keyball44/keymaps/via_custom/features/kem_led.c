@@ -478,6 +478,7 @@ bool kem_led_process_matrix_event(uint8_t row,
             kem_th_active = false;
         }
 
+        kem_led_output_state(led, is_left_side, KEM_LED_STATE_OFF);
         kem_led_restore_layer_color();
     }
 
