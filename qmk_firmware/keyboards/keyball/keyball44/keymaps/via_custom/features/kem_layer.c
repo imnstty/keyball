@@ -24,7 +24,7 @@ Copyright 2026 Tetsuya Imanishi
 #include "kem_layer.h"
 #include "kem.h"
 
-#define KEM_LAYER5 4
+#define KEM_LAYER5 5
 
 static bool kem_l5_active = false;
 static bool kem_l5_interrupted = false;
