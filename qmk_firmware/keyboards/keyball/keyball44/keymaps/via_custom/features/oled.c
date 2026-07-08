@@ -85,6 +85,7 @@
  ******************************************************************************/
 
 #include "oled.h"
+#include "kem_debug.h"
 #include "lib/keyball/keyball.h"
 #include "lib/oledkit/oledkit.h"
 
@@ -340,7 +341,7 @@ static void render_page3(void)
 {
     static const char hex[] = "0123456789ABCDEF";
 
-    oled_write_ln_P(PSTR("DBG"), false);
+    oled_write_ln_P(PSTR("DBG"), kem_debug_is_enabled());
     oled_write_ln_P(PSTR(""), false);
 
     oled_write_ln_P(PSTR("POS"), false);
