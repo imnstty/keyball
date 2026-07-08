@@ -20,6 +20,11 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.16  2026-07-08
+ * - Added Matrix LED Event API.
+ * - Added instant white LED output on matrix press.
+ * - Added layer color restore on matrix release.
+ *
  * Ver 2.15  2026-07-07
  * - Centralized LED hardware access through kem_led_hw_set_rgb().
  * - No functional changes.
@@ -409,8 +414,6 @@ void kem_led_init(void)
 #endif
 }
 
-#else
-
 bool kem_led_process_matrix_event(uint8_t row,
                                   uint8_t col,
                                   bool pressed,
@@ -432,6 +435,16 @@ bool kem_led_process_matrix_event(uint8_t row,
         kem_led_restore_layer_color();
     }
 
+    return true;
+}
+
+#else
+
+bool kem_led_process_matrix_event(uint8_t row,
+                                  uint8_t col,
+                                  bool pressed,
+                                  uint8_t led)
+{
     return true;
 }
 
