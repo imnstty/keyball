@@ -42,6 +42,12 @@ void kem_debug_handle_event(const kem_debug_event_t *event);
 void kem_debug_send(const kem_debug_event_t *event);
 void kem_debug_record_key_event(uint16_t keycode, keyrecord_t *record);
 void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, uint8_t led);
+
+/* Matrix Debug */
+void kem_debug_record_matrix_event(uint8_t row,
+                                   uint8_t col,
+                                   bool pressed);
+
 void kem_debug_enable(bool enable);
 bool kem_debug_is_enabled(void);
 void kem_debug_toggle(void);

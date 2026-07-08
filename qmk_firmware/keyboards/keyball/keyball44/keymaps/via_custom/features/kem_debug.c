@@ -96,6 +96,23 @@ void kem_debug_record_key_event_with_led(uint16_t keycode, keyrecord_t *record, 
     kem_debug_handle_event(&event);
 }
 
+void kem_debug_record_matrix_event(uint8_t row,
+                                   uint8_t col,
+                                   bool pressed)
+{
+    kem_debug_event_t event = {
+        .type = KEM_DEBUG_EVENT_KEY,
+        .keycode = 0xFFFF, // Matrix Event識別用
+        .pressed = pressed,
+        .row = row,
+        .col = col,
+        .time = timer_read(),
+        .led = 255,
+    };
+
+    kem_debug_handle_event(&event);
+}
+
 void kem_debug_enable(bool enable)
 {
     s_debug_enabled = enable;

@@ -296,7 +296,37 @@ void keyboard_post_init_user(void)
     kem_led_init();
 }
 
+// void matrix_scan_user(void)
+//{
+//     kem_task();
+// }
+
 void matrix_scan_user(void)
 {
+    static matrix_row_t prev_matrix[MATRIX_ROWS] = {0};
+
+    for (uint8_t row = 0; row < MATRIX_ROWS; row++)
+    {
+        matrix_row_t current = matrix_get_row(row);
+        matrix_row_t changed = current ^ prev_matrix[row];
+
+        if (changed)
+        {
+            for (uint8_t col = 0; col < MATRIX_COLS; col++)
+            {
+                if (changed & ((matrix_row_t)1 << col))
+                {
+                    bool pressed = current & ((matrix_row_t)1 << col);
+
+                    // ここでDebug出力
+                    // keycodeは未確定なので仮で0xFFFFを送る
+                    kem_debug_record_matrix_event(row, col, pressed);
+                }
+            }
+
+            prev_matrix[row] = current;
+        }
+    }
+
     kem_task();
 }
