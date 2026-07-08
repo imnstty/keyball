@@ -20,6 +20,9 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * Ver 2.22  2026-07-08
+ * - Added hold LED transition after TAPPING_TERM for tracked Tap/Hold keys.
+ *
  * Ver 2.21  2026-07-08
  * - Added lightweight Tap/Hold LED tracking state.
  * - Added promotion from matrix candidate to Tap/Hold tracking.
@@ -428,6 +431,14 @@ void kem_led_task(void)
 {
     kem_led_update_l5_state();
     kem_led_render_context(&kem_l5_led_ctx);
+
+    if (kem_th_active && timer_elapsed(kem_th_time) >= TAPPING_TERM)
+    {
+        bool is_left_side = kem_th_row < 4;
+
+        kem_led_output_state(kem_th_led, is_left_side, KEM_LED_STATE_HOLD);
+        kem_th_active = false;
+    }
 
 #ifdef SPLIT_KEYBOARD
     kem_led_sync_flush();
