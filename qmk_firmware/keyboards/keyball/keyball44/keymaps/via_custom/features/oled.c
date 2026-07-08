@@ -27,6 +27,9 @@
  * Revision History
  *-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
+ * Ver 2.24  2026-07-08
+ * - Added hold LED transition after TAPPING_TERM for tracked Tap/Hold keys.
+ *
  * Ver 2.21  2026-07-08
  * - Added lightweight Tap/Hold LED tracking state.
  * - Added promotion from matrix candidate to Tap/Hold tracking.
@@ -99,7 +102,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.21";
+static const char firmware_version[] = "v2.24";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;

@@ -434,6 +434,12 @@ void kem_led_task(void)
     kem_led_update_l5_state();
     kem_led_render_context(&kem_l5_led_ctx);
 
+    if (kem_th_active && timer_elapsed(kem_th_time) >= TAPPING_TERM)
+    {
+        kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
+        kem_th_active = false;
+    }
+
 #ifdef SPLIT_KEYBOARD
     kem_led_sync_flush();
 #endif
