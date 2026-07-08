@@ -314,7 +314,7 @@ static void kem_led_restore_layer_color(void)
     }
 }
 
-static bool kem_led_is_tap_hold_keycode(uint16_t keycode)
+static bool __attribute__((unused)) kem_led_is_tap_hold_keycode(uint16_t keycode)
 {
     uint16_t type = keycode & 0xF000;
 
