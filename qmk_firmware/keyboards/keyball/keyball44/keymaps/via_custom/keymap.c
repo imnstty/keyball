@@ -240,11 +240,52 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
     if (row < 4)
     {
-        debug_led = left_key_to_led[row][col];
+        // 左手キー
+        uint8_t led = left_key_to_led[row][col];
+        debug_led = led;
+
+        if (led != NO_LED)
+        {
+            if (is_keyboard_left())
+            {
+                // USB左なら左LEDを直接
+                rgblight_setrgb_at(
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    led);
+            }
+            else
+            {
+                // USB右なら左側slaveへ送る
+                keyball_send_led_event(led, record->event.pressed);
+            }
+        }
     }
     else
     {
-        debug_led = right_key_to_led[row - 4][col];
+        // 右手キー
+        uint8_t led = right_key_to_led[row - 4][col];
+        debug_led = led;
+
+        if (led != NO_LED)
+        {
+            if (!is_keyboard_left())
+            {
+                uint8_t actual_led = led + 30;
+                // USB右なら右LEDを直接
+                rgblight_setrgb_at(
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    record->event.pressed ? 255 : 0,
+                    actual_led);
+            }
+            else
+            {
+                // USB左なら右側slaveへ送る
+                keyball_send_led_event(led, record->event.pressed);
+            }
+        }
     }
 
 #ifdef OLED_ENABLE
