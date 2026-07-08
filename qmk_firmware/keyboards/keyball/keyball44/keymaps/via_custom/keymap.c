@@ -191,9 +191,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
     case KC_MENU:
         if (record->event.pressed)
         {
+            if (get_mods() & MOD_MASK_SHIFT)
+            {
+                kem_debug_toggle();
+            }
+            else
+            {
 #ifdef OLED_ENABLE
-            oled_next_page();
+                oled_next_page();
 #endif
+            }
         }
         return false;
 
