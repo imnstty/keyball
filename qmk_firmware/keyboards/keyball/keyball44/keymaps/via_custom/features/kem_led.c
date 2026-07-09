@@ -509,7 +509,7 @@ bool kem_led_process_matrix_event(uint8_t row,
         kem_led_restore_layer_color();
     }
 
-    if (kem_th_active && kem_th_hold)
+    if (kem_th_hold)
     {
         kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
     }
