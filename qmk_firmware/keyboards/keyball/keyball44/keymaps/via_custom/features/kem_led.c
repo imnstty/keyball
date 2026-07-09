@@ -488,12 +488,14 @@ bool kem_led_process_matrix_event(uint8_t row,
 
     if (pressed)
     {
-        kem_th_active = false;
-        kem_th_hold = false;
-        kem_th_row = row;
-        kem_th_col = col;
-        kem_th_led = led;
-        kem_th_time = timer_read();
+        if (!kem_th_hold)
+        {
+            kem_th_active = false;
+            kem_th_row = row;
+            kem_th_col = col;
+            kem_th_led = led;
+            kem_th_time = timer_read();
+        }
 
         kem_led_output_state(led, is_left_side, KEM_LED_STATE_TAP);
     }
@@ -507,11 +509,6 @@ bool kem_led_process_matrix_event(uint8_t row,
 
         kem_led_output_state(led, is_left_side, KEM_LED_STATE_OFF);
         kem_led_restore_layer_color();
-    }
-
-    if (kem_th_hold)
-    {
-        kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
     }
 
     return true;
