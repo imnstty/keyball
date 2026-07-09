@@ -7,8 +7,8 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.20
- * @date      2026-07-08
+ * @version   2.25
+ * @date      2026-07-09
  *
  *-----------------------------------------------------------------------------
  * Revision History
@@ -19,6 +19,9 @@ Copyright 2026 Tetsuya Imanishi
  * * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
+ * Ver 2.25  2026-07-08
+ * - Prevented Tap/Hold tracking promotion after physical key release.
  *
  * Ver 2.22  2026-07-08
  * - Added hold LED transition after TAPPING_TERM for tracked Tap/Hold keys.
@@ -374,7 +377,8 @@ bool kem_led_process_record(uint16_t keycode, keyrecord_t *record)
     if (record->event.pressed &&
         kem_led_is_tap_hold_keycode(keycode) &&
         kem_th_row == record->event.key.row &&
-        kem_th_col == record->event.key.col)
+        kem_th_col == record->event.key.col &&
+        (matrix_get_row(kem_th_row) & ((matrix_row_t)1 << kem_th_col)))
     {
         kem_th_active = true;
     }
