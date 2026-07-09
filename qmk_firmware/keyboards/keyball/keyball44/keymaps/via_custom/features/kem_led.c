@@ -7,7 +7,7 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.25
+ * @version   2.26
  * @date      2026-07-09
  *
  *-----------------------------------------------------------------------------
@@ -19,6 +19,10 @@ Copyright 2026 Tetsuya Imanishi
  * * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
+ * Ver 2.26  2026-07-08
+ * - Kept Tap/Hold hold LED state active until physical release.
+ * - Added hold-state flag for tracked Tap/Hold key.
  *
  * Ver 2.25  2026-07-08
  * - Prevented Tap/Hold tracking promotion after physical key release.
@@ -123,6 +127,7 @@ static kem_led_context_t kem_l5_led_ctx = {
 };
 
 static bool kem_th_active = false;
+static bool kem_th_hold = false;
 static uint8_t kem_th_row = 0;
 static uint8_t kem_th_col = 0;
 static uint8_t kem_th_led = KEM_NO_LED;
@@ -438,10 +443,17 @@ void kem_led_task(void)
     kem_led_update_l5_state();
     kem_led_render_context(&kem_l5_led_ctx);
 
-    if (kem_th_active && timer_elapsed(kem_th_time) >= TAPPING_TERM)
+    if (kem_th_active)
     {
-        kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
-        kem_th_active = false;
+        if (!kem_th_hold && timer_elapsed(kem_th_time) >= TAPPING_TERM)
+        {
+            kem_th_hold = true;
+        }
+
+        if (kem_th_hold)
+        {
+            kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
+        }
     }
 
 #ifdef SPLIT_KEYBOARD
@@ -474,6 +486,7 @@ bool kem_led_process_matrix_event(uint8_t row,
     if (pressed)
     {
         kem_th_active = false;
+        kem_th_hold = false;
         kem_th_row = row;
         kem_th_col = col;
         kem_th_led = led;
@@ -486,6 +499,7 @@ bool kem_led_process_matrix_event(uint8_t row,
         if (kem_th_row == row && kem_th_col == col)
         {
             kem_th_active = false;
+            kem_th_hold = false;
         }
 
         kem_led_output_state(led, is_left_side, KEM_LED_STATE_OFF);
