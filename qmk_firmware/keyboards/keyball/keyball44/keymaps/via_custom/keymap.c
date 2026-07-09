@@ -264,11 +264,6 @@ void keyboard_post_init_user(void)
     kem_led_init();
 }
 
-// void matrix_scan_user(void)
-//{
-//     kem_task();
-// }
-
 void matrix_scan_user(void)
 {
     static matrix_row_t prev_matrix[MATRIX_ROWS] = {0};
