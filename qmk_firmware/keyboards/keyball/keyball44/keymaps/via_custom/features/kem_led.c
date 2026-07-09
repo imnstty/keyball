@@ -7,7 +7,7 @@ Copyright 2026 Tetsuya Imanishi
  * @project   Keyball44 Custom Firmware
  * @brief     KEM LED Engine
  *
- * @version   2.26
+ * @version   2.27
  * @date      2026-07-09
  *
  *-----------------------------------------------------------------------------
@@ -19,6 +19,9 @@ Copyright 2026 Tetsuya Imanishi
  * * Ver 2.04  2026-07-06
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
+ *
+ * Ver 2.27  2026-07-08
+ * - Re-rendered held Tap/Hold LED after matrix LED events.
  *
  * Ver 2.26  2026-07-08
  * - Kept Tap/Hold hold LED state active until physical release.
@@ -504,6 +507,11 @@ bool kem_led_process_matrix_event(uint8_t row,
 
         kem_led_output_state(led, is_left_side, KEM_LED_STATE_OFF);
         kem_led_restore_layer_color();
+    }
+
+    if (kem_th_active && kem_th_hold)
+    {
+        kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
     }
 
     return true;

@@ -27,6 +27,9 @@
  * Revision History
  *-----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
+ * Ver 2.27  2026-07-08
+ * - Re-rendered held Tap/Hold LED after matrix LED events.
+ *
  * Ver 2.26  2026-07-08
  * - Kept Tap/Hold hold LED state active until physical release.
  * - Added hold-state flag for tracked Tap/Hold key.
@@ -109,7 +112,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.26";
+static const char firmware_version[] = "v2.27";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;
