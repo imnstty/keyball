@@ -430,7 +430,7 @@ bool kem_led_handle_event(const kem_led_event_t *event)
     switch (event->type)
     {
     case KEM_LED_EVENT_KEY:
-        na if (!event->record)
+        if (!event->record)
         {
             return true;
         }
