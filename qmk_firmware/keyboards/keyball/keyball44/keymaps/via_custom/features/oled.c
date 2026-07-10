@@ -26,7 +26,12 @@
  *-----------------------------------------------------------------------------
  * Revision History
  *-----------------------------------------------------------------------------
------------------------------------------------------------------------------
+
+ * Ver 2.28  2026-07-09
+ * - Changed Hold LED rendering to event-driven output.
+ * - Reduced continuous LED synchronization traffic during Hold state.
+ * - Preparation for stable split pointing device operation.
+ *
  * Ver 2.27  2026-07-08
  * - Re-rendered held Tap/Hold LED after matrix LED events.
  *
@@ -112,7 +117,7 @@
 /******************************************************************************
  * Variables
  ******************************************************************************/
-static const char firmware_version[] = "v2.27";
+static const char firmware_version[] = "v2.28";
 static uint8_t oled_page = 0;
 static uint8_t last_row = 0;
 static uint8_t last_col = 0;

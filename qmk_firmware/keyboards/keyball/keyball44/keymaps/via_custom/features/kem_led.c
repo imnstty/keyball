@@ -20,6 +20,13 @@ Copyright 2026 Tetsuya Imanishi
  * - Replaced RGB synchronization with KEM LED state synchronization.
  * - Added split state synchronization for KEM_L5 Hold indicator.
  *
+ * KEM LED Engine
+ *
+ * Ver 2.28  2026-07-09
+ * - Changed Hold LED rendering to event-driven output.
+ * - Reduced continuous LED synchronization traffic during Hold state.
+ * - Preparation for stable split pointing device operation.
+ *
  * Ver 2.27  2026-07-08
  * - Re-rendered held Tap/Hold LED after matrix LED events.
  *
@@ -430,7 +437,7 @@ bool kem_led_handle_event(const kem_led_event_t *event)
     switch (event->type)
     {
     case KEM_LED_EVENT_KEY:
-        if (!event->record)
+        na if (!event->record)
         {
             return true;
         }
@@ -455,7 +462,11 @@ void kem_led_task(void)
 
         if (kem_th_hold)
         {
-            kem_led_output_state(kem_th_led, kem_th_row < 4, KEM_LED_STATE_HOLD);
+            kem_th_hold = true;
+            kem_led_output_state(
+                kem_th_led,
+                kem_th_row < 4,
+                KEM_LED_STATE_HOLD);
         }
     }
 
