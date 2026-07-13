@@ -126,13 +126,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_LALT , KC_LGUI , _______ , LT(2,KC_SPC), _______ ,           LT(1,KC_ENT),LT(2,KC_SPC), _______ , _______ , KC_PDOT
     ),
 
-    [4] = LAYOUT_universal(
-        KC_ESC        , KC_Q , KC_L , KC_U , KC_MINS , KC_BSPC ,                                                KC_F     , KC_W    , KC_R    , KC_Y     , KC_P     , KC_DEL ,
-        LSFT_T(KC_TAB), KC_E , KC_I , KC_A , KC_O    , KC_COMM ,                                                KC_K     , KC_T    , KC_N    ,LT(3,KC_S),LT(1,KC_H), KC_NO  ,
-        KC_LCTL       , KC_Z , KC_X , KC_C , KC_V    , KC_DOT  ,                                                KC_G     , KC_D    , KC_M    , KC_J     , KC_B     , KC_NO  ,
-                 KC_LALT , KC_LGUI  ,LT(3,KC_LNG2),LT(2,KC_SPC),LT(1,KC_ENT),                     LT(1,KC_LNG1),LT(2,KC_SPC), _______ , _______ , KEM_L5
-    ),
-
     [5] = LAYOUT_universal(
         KC_ESC        ,LCTL(KC_1), KC_F2    , KC_E     , KC_DEL   , KC_BSPC  ,                                   KC_NO   , KC_NO   , KC_NO   , KC_NO   ,LCTL(KC_P), KC_DEL ,
         LSFT_T(KC_TAB),LCTL(KC_A),QK_MACRO_2,QK_MACRO_1,QK_MACRO_0, KC_COMM  ,                                   KC_NO   , KC_UP   , KC_BTN1 , KC_BTN2 , KC_BTN3  , AML_TO ,
