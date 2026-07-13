@@ -126,12 +126,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_LALT , KC_LGUI , _______ , LT(2,KC_SPC), _______ ,           LT(1,KC_ENT),LT(2,KC_SPC), _______ , _______ , KC_PDOT
     ),
 
-    [5] = LAYOUT_universal(
-        KC_ESC        ,LCTL(KC_1), KC_F2    , KC_E     , KC_DEL   , KC_BSPC  ,                                   KC_NO   , KC_NO   , KC_NO   , KC_NO   ,LCTL(KC_P), KC_DEL ,
-        LSFT_T(KC_TAB),LCTL(KC_A),QK_MACRO_2,QK_MACRO_1,QK_MACRO_0, KC_COMM  ,                                   KC_NO   , KC_UP   , KC_BTN1 , KC_BTN2 , KC_BTN3  , AML_TO ,
-        KC_LCTL       ,LCTL(KC_Z),LCTL(KC_X),LCTL(KC_C),LCTL(KC_V),LCTL(KC_Y),                                   KC_LEFT , KC_DOWN , KC_RGHT , KC_NO   , KC_NO    , KC_NO  ,
-                               KC_LALT , KC_LGUI ,LT(3,KC_LEFT),LT(2,KC_RGHT),LT(1,KC_ENT),        LT(1,KC_INT4),LT(2,KC_SPC), _______ , _______ , TO(0)
-    ),
 };
 // clang-format on
 
